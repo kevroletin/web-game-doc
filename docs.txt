@@ -47,6 +47,11 @@ V.  PROTOCOL DESCRIPTION
 
 Server receives JSON  messages sent via http POST. Typical responses are described below under TYPICAL RESPONSES title.
 
+TEST QUERY
+	Each query must be JSON object with "test" and "description"(optional) field.
+	"test" field is list or just one JSON object, that describes the query.
+	All possible types of queries and its formats are described in section BASIC COMMANDS
+
 TYPICAL RESPONSES
 	Response is a list of JSON objects created in following format:
 		{
@@ -80,7 +85,7 @@ BASIC COMMANDS
 			<password> is a 6-18 characters string starting from latin letter or number. It may omly contain latin letters and numbers.
 		
 		Success:
-			'ok'
+			{'result': 'ok'}
 		
 		Fail:
 			'badJson', 'badUsername', 'badPassword', 'usernameTaken'
@@ -97,29 +102,28 @@ BASIC COMMANDS
 			}
 		
 		Success:
-			('ok', <sid>)
+			{'result': 'ok', 'sid': <sid>}
 		
 		Fail:
-			'badJson', 'badUsernameOrPassword', 'userLoggedIn'
+			{'result': 'badJson'}, {'result': 'badUsernameOrPassword'}
 		
 		Description:
-			Logs the user in. Returns a pair containing the session ID. User can't do anything (but register)
-			without being logged in first.
+			Logs the user in. Returns a pair containing the session ID. For tests sids are generated as sequence of integers. User can't do anything (but register)	without being logged in first.
 	
 	
 	~Logout
 		Format:
 			{
 				"action" : "logout", 
-				"sid" : "<sid>",
+				"sid" : <sid>,
 			}
 			<sid> is a number received from server when "login" command is executed. Anything else is not a <sid>.
 			
 		Success:
-			'ok'
+			{'result': 'ok'}
 		
 		Fail:
-			'badJson', 'badSid'
+			{'result': 'badJson'}, {'result': 'badSid'}
 		
 		Description:
 			Logs the user out. Logged out user can't use his sid anymore.
@@ -128,13 +132,53 @@ BASIC COMMANDS
 		Format:
 			{
 				"action" : "doSmtn", 
-				"sid" : "<sid>",
+				"sid" : <sid>,
 			}
 		Success:
-			'ok'
+			{'result': 'ok'}
 		
 		Fail:
-			'badJson', 'badSid'
+			{'result': 'badJson'}, {'result': 'badSid'}
 		
 		Description:
 			Do something. Just for testing. Returns 'badJson' if the JSON object is incorrect, 'badSid' if there is no logged in user with the specified sid.
+	
+	~uploadMap
+		Format:
+		{
+			"action": "uploadMap",
+			"mapName": "<mapName>",
+			"playersNum": <playersNum>
+		}
+		Success:
+			{"result": "ok", "mapId": <mapId>}
+		
+		Fail:
+			{"result": "badJson"}, {"result": "badMapName"}, {"result": "badPlayersNum"}
+			
+		Description:
+			Creates new map with mapName name, name must be UNIQUE string with length less than 16 symbols, otherwise returns {"result": "badMapName"}. 
+			The playersNum must be an integer in interval:[2, 5].
+			
+	~createGame
+		Format:
+		{
+			"action": "createGame",
+			"sid": <sid>,
+			"gameName": "<gameName>",
+			"mapId": <mapId>,
+			"playersNum": <playersNum>,
+			"gameDescr": "<gameDescription>" //optional
+		}
+		Success:
+			{"result": "ok", "gameId": <gameId>}
+			
+		Fail:
+			{"result": "badJson"}, {"result": "badSid"}, {"result": "badMap"}, {"result": "badNumberOfPlayers"}, {"result": "badGameName"}, {"result": "badGameDescription"}
+			
+		Description:
+			Creates new game. Sid must be a valid session id of one of users who doesn't play in other game, otherwise returns {"result": "badSid"}
+			gameName must be UNIQUE string that length is in interval [1, 50], otherwise function returns {"result": "badGameName"}. 
+			mapId must be valid id of map, otherwse returns {"result": "badMap"}
+			playersNum is an integer that is equal to playerNum of chosen map(otherwise {"result": "badnumberOfPPlayers"})
+			gameDescription is an optional field, that length must be less than 300({"result": "badGameDescription"} otherwise)
