@@ -1,4 +1,4 @@
-**SMALLWORLDS** - ALPHA EDITION
+**SMALLWORLD** - ALPHA EDITION
 Version 0.001
 Readme File
 September 15, 2011
@@ -10,7 +10,7 @@ About This Document:
 This README file includes information that pertains to general
 problems and questions you may have concerning the program or your
 computer. 
-Should you experience any problems with SMALLWORLDS - ALPHA EDITION, please refer to this file 
+Should you experience any problems with SMALLWORLD - ALPHA EDITION, please refer to this file 
 for additional help on answering questions about the program and solving technical difficulties.
 
 TABLE OF CONTENTS
@@ -26,7 +26,7 @@ TABLE OF CONTENTS
 
 I. INTRODUCTION
 ===============
-SMALLWORLDS is JSON-based client-server application. Details are yet to be revealed.
+SMALLWORLD is JSON-based client-server application. Details are yet to be revealed.
 
 II. UNDOCUMENTED FEATURES
 =========================
@@ -51,7 +51,7 @@ RESPONSES title.
 TEST QUERY
 ----------
 Each query must be JSON object with "test" and "description"(optional) field.
-"test" field is list or just one JSON object, that describes the query.
+"test" field is list or just one JSON object that describes the query.
 All possible types of queries and its formats are described in section BASIC COMMANDS
 
 TYPICAL RESPONSES
@@ -60,7 +60,7 @@ TYPICAL RESPONSES
 
     {
       'result': <ans>,
-      other fileds with parameters 
+      other fields with parameters 
     },
 
 <**ans**> can possess one of the following values:
@@ -72,7 +72,7 @@ TYPICAL RESPONSES
 * badPassword: Entered password is not allowed. Same advice as before.
 * usernameTaken: Pretty much self-explanatory. Think up a new one.
 * badUsernameOrPassword: Either user with this username hasn't signed up yet or password differs from one entered during registration.
-* userLoggedIn: User were trying to log in without loggin' out first. Regrettably, it's not possible.
+* userLoggedIn: User was trying to log in without loggin' out first. Regrettably, it's not possible yet.
 * badSid: User was trying to do something with incorrect session id. Read "Logout" command description to understand what kind of sid you can use.
 
 For "login" query the second field is `"sid": sid`
@@ -96,8 +96,8 @@ error's to be expected.
 may contain latin letters, numbers, underlines, hyphens and nothing
 else
       
-<**password**> is a 6-18 characters string starting from latin letter
-or number. It may omly contain latin letters and numbers.
+<**password**> is a 6-18 characters string. It may contain any ASCII
+character you like 
     
 #####Success:
     {'result': 'ok'}
@@ -169,7 +169,7 @@ Logs the user out. Logged out user can't use his sid anymore.
     {'result': 'badSid'}
     
 #####Description:
-Do something. Just for testing. Returns 'badJson' if the JSON object
+Does something. Just for testing. Returns 'badJson' if the JSON object
 is incorrect, 'badSid' if there is no logged in user with the
 specified sid.
 
@@ -190,8 +190,8 @@ specified sid.
     {"result": "badPlayersNum"}
       
 #####Description:
-Creates new map with mapName name, name must be UNIQUE string with
-length less than 16 symbols, otherwise returns `{"result":
+Creates a new map with mapName name, name must be UNIQUE string 
+with length less than 16 symbols, otherwise returns `{"result":
 "badMapName"}`. 
 
       The playersNum must be an integer in interval:[2, 5].
@@ -223,15 +223,15 @@ Creates new game.
 **Sid** must be a valid session id of one of users who doesn't play in
   other game, otherwise returns `{"result": "badSid"}`
 
-**gameName** must be **UNIQUE** string that length is in interval [1,
+**gameName** must be **UNIQUE** string whose length is in interval [1,
   50], otherwise function returns `{"result": "badGameName"}`. 
 
-**mapId** must be valid id of map, otherwse returns {"result":
+**mapId** must be valid id of map, otherwise returns {"result":
   "badMap"}
 
 **playersNum** is an integer that is equal to playerNum of chosen
   map(otherwise `{"result": "badnumberOfPPlayers"}`)
 
-**gameDescription** is an optional field, that length must be less
+**gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
 
