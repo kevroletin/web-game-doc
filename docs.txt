@@ -45,7 +45,7 @@ Everything works just fine.
 V.  PROTOCOL DESCRIPTION
 -----------------------------
 
-Server receives JSON  messages sent via http POST. Typical responses are described below under TYPICAL RESPONSES title.
+Server receives JSON  messages sent via http POST in request body. Typical responses are described below under TYPICAL RESPONSES title.
 
 TEST QUERY
 	Each query must be JSON object with "test" and "description"(optional) field.
@@ -60,6 +60,7 @@ TYPICAL RESPONSES
 		},
 	ans can possess one of the following values:
 		*ok: String or list containing this word in lower case usually means that operation went succesfully. 
+		*badAction: Action field from JSON query is unknown for server
 		*badJson: Incorrent format of JSON message were received. Read the BASIC COMMANDS subsection below for more information on the subject.
 		*badUsername: Entered username is not allowed. Check out "registration" command format in BASIC COMMANDS subsection.
 		*badPassword: Entered password is not allowed. Same advice as before.
