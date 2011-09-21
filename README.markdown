@@ -212,7 +212,7 @@ with length less than 16 symbols, otherwise returns `{"result":
 #####Fail:
       {"result": "badJson"},
       {"result": "badSid"},
-      {"result": "badMap"},
+      {"result": "badMapId"},
       {"result": "badNumberOfPlayers"},
       {"result": "badGameName"},
       {"result": "badGameDescription"}
@@ -227,7 +227,7 @@ Creates new game.
   50], otherwise function returns `{"result": "badGameName"}`. 
 
 **mapId** must be valid id of map, otherwise returns {"result":
-  "badMap"}
+  "badMapId"}
 
 **playersNum** is an integer that is equal to playerNum of chosen
   map(otherwise `{"result": "badnumberOfPPlayers"}`)
@@ -235,3 +235,157 @@ Creates new game.
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
 
+###uploadMap
+#####Format:
+    {
+      "action": "uploadMap",
+      "mapName": "<mapName>",
+      "playersNum": <playersNum>,
+    }
+#####Success:
+      {"result": "ok", "mapId": <mapId>}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badMapName"},
+      {"result": "badPlayersNum"}
+      
+#####Description:
+Upload map with specified name and number of players
+
+**mapName** must be **UNIQUE** string whose length is in interval [1,
+  15], otherwise function returns `{"result": "badMapName"}`. 
+
+**playersNum** is an integer in interval[1, 15](otherwise `{"result": "badPlayersNum"}`)
+  
+###createDefaultMaps
+#####Format:
+    {
+      "action": "createDefaultMaps"
+	}
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      The same as in uploadMap
+      
+#####Description:
+Create 4 default maps: defaultMap1(playersNum = 2), defaultMap2(playersNum = 3), defaultMap3(playersNum = 4), defaultMap4(playersNum = 5)
+
+###joinGame
+#####Format:
+    {
+      "action": "joinGame",
+      "sid": <sid>,
+      "gameId": <gameName>
+    }
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "badGameId"},
+	  {"result": "badGameState"},
+	  {"result": "alreadyInGame"},
+	  {"result": "tooManyPlayers"}
+      
+#####Description:
+User with specified sid joins the game with id = gameId
+
+**Sid** must be a valid session id of one of users who doesn't play in
+  other game, otherwise returns `{"result": "badSid"}`
+
+**gameId** must be valid id of game, otherwise returns {"result":
+  "badGameId"}
+If game status is not equal to 'waiting the begining', function returns {"result": "badGameState"}.
+If the user with specified session id is playing or waiting the begining of another game, it returns {"result": "alreadyInGame"}.
+If there are no free space on map for new users, it returns {"result": "tooManyPlayers"}
+
+###leaveGame
+#####Format:
+    {
+      "action": "leaveGame",
+      "sid": <sid>
+    }
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "notInGame"}
+      
+#####Description:
+User with specified sid leaves the game
+If user doesn't play in any game, it returns {"result": "notInGame"}
+
+**Sid** must be a valid session id of one of users who plays in any game, otherwise returns `{"result": "badSid"}`
+
+###setReadinessStatus
+#####Format:
+    {
+      "action": "setReadinessStatus",
+      "sid": <sid>,
+	  "readinessStatus": <status>
+    }
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "notInGame"},
+	  {"result": "badGameState"},
+      {"result": "badReadinessStatus"}
+      
+#####Description:
+Changes user's readiness status. If new status == 1 and it's the last ready user, the game transers to the state 'processing'.
+If user doesn't play in any game, it returns {"result": "notInGame"}.
+User cannot change his readiness status if the game isn't in state 'waiting'(in other game states it returns {"result": "badGameState"})
+
+**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
+
+**status** may be equal to 0 if user isn't ready, and 1 if he/she is ready to play? otherwise function returns `{"result": "badReadinessStatus"}`  
+
+###getMessages
+#####Format:
+    {
+      "action": "getMessages",
+      "since": <since>
+    }
+#####Success:
+       {"result": "ok", "mesArray": mesArray}
+      
+#####Fail:
+      {"result": "badJson"}
+      
+#####Description:
+Get 100 last messages from <since> time
+
+**since** must be a positive float value, otherwise function returns `{"result": "badSid"}`
+
+**mesArray** is a list of objects such as {"userId": userId, "message": message, "mesTime": mesTime}
+
+###sendMessage
+#####Format:
+    {
+      "action": "sendMessage",
+      "userId": <userId>,
+	  "message": "<message>"
+    }
+#####Success:
+      {"result": "ok", , "mesTime": mesTime}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badUserId"}
+      
+#####Description:
+Send message with "<message>" text from user with id = <userId>.
+
+**userId** must be a valid user id of one of users, otherwise it returns `{"result": "badUserId"}`
+
+**message** is a text that must be sent
+
+**mesTime** is a time of sending
