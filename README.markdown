@@ -173,29 +173,29 @@ Does something. Just for testing. Returns 'badJson' if the JSON object
 is incorrect, 'badSid' if there is no logged in user with the
 specified sid.
 
-  
 ###uploadMap
 #####Format:
     {
       "action": "uploadMap",
       "mapName": "<mapName>",
-      "playersNum": <playersNum>
+      "playersNum": <playersNum>,
     }
 #####Success:
       {"result": "ok", "mapId": <mapId>}
-    
+      
 #####Fail:
-    {"result": "badJson"},
-    {"result": "badMapName"},
-    {"result": "badPlayersNum"}
+      {"result": "badJson"},
+      {"result": "badMapName"},
+      {"result": "badPlayersNum"}
       
 #####Description:
-Creates a new map with mapName name, name must be UNIQUE string 
-with length less than 16 symbols, otherwise returns `{"result":
-"badMapName"}`. 
+Upload map with specified name and number of players
 
-      The playersNum must be an integer in interval:[2, 5].
-      
+**mapName** must be **UNIQUE** string whose length is in interval [1,
+  15], otherwise function returns `{"result": "badMapName"}`. 
+
+**playersNum** is an integer in interval[1, 5](otherwise `{"result": "badPlayersNum"}`)
+  
 ###createGame
 #####Format:
     {
@@ -235,28 +235,6 @@ Creates new game.
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
 
-###uploadMap
-#####Format:
-    {
-      "action": "uploadMap",
-      "mapName": "<mapName>",
-      "playersNum": <playersNum>,
-    }
-#####Success:
-      {"result": "ok", "mapId": <mapId>}
-      
-#####Fail:
-      {"result": "badJson"},
-      {"result": "badMapName"},
-      {"result": "badPlayersNum"}
-      
-#####Description:
-Upload map with specified name and number of players
-
-**mapName** must be **UNIQUE** string whose length is in interval [1,
-  15], otherwise function returns `{"result": "badMapName"}`. 
-
-**playersNum** is an integer in interval[1, 15](otherwise `{"result": "badPlayersNum"}`)
   
 ###createDefaultMaps
 #####Format:
