@@ -393,7 +393,7 @@ Select rase which has position <position> on the desk
 
 **position** is a position of token badge on the desk. It must not negative and less or equals 5, otherwise function returns`{"result": "badPosition"}`
 When you choose rase you have to pay one coin for every rase with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`
-<coins to pay> = <number of visible rases> - <position> - 1 
+"coins to pay" = "number of visible rases" - "position" - 1 
 
 You can choose rase only when you have no active rase, otherwise it returns`{"result": "badStage"}`
 
