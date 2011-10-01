@@ -360,7 +360,7 @@ Get 100 last messages from <since> time
       {"result": "badSid"}
       
 #####Description:
-Send message with "<text>" text from user with sid = <sid>.
+Send message with <**text**> text from user with sid = <**Sid**>.
 
 **Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
@@ -387,14 +387,15 @@ Send message with "<text>" text from user with sid = <sid>.
 
       
 #####Description:
-Select rase which has position <position> on the desk 
+Select race which has position <position> on the desk 
 
 **Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
 **position** is a position of token badge on the desk. It must not negative and less or equals 5, otherwise function returns`{"result": "badPosition"}`
-When you choose rase you have to pay one coin for every rase with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`
+When you choose race you have to pay one coin for every race with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`.
+
 "coins to pay" = "number of visible rases" - "position" - 1 
 
-You can choose rase only when you have no active rase, otherwise it returns`{"result": "badStage"}`
+You can choose rase only when you have no active race, otherwise it returns`{"result": "badStage"}`
 
 
