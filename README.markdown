@@ -207,7 +207,7 @@ Upload map with specified name and number of players
       "gameDescr": "<gameDescription>" //optional
     }
 #####Success:
-      {"result": "ok", "gameId": <gameId>}
+      {"result": "ok", "gameId": <gameId>, "regions": [<regions>]}
       
 #####Fail:
       {"result": "badJson"},
@@ -234,6 +234,8 @@ Creates new game.
 
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
+
+**regions** is list of region indexes for chosen map
 
   
 ###createDefaultMaps
@@ -333,7 +335,7 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
       "since": <since>
     }
 #####Success:
-       {"result": "ok", "mesArray": mesArray}
+       {"result": "ok", "messages": messages}
       
 #####Fail:
       {"result": "badJson"}
@@ -341,29 +343,58 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
 #####Description:
 Get 100 last messages from <since> time
 
-**since** must be a positive float value, otherwise function returns `{"result": "badSid"}`
-
-**mesArray** is a list of objects such as {"userId": userId, "message": message, "mesTime": mesTime}
+**messages** is a list of objects such as {"userId": userId, "text": text, "time": time}
 
 ###sendMessage
 #####Format:
     {
       "action": "sendMessage",
-      "userId": <userId>,
-	  "message": "<message>"
+      "sid": <sid>,
+	  "text": "<text>"
     }
 #####Success:
-      {"result": "ok", , "mesTime": mesTime}
+      {"result": "ok", , "time": time}
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badUserId"}
+      {"result": "badSid"}
       
 #####Description:
-Send message with "<message>" text from user with id = <userId>.
+Send message with "<text>" text from user with sid = <sid>.
 
-**userId** must be a valid user id of one of users, otherwise it returns `{"result": "badUserId"}`
+**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
-**message** is a text that must be sent
+**text** is a text that must be sent
 
-**mesTime** is a time of sending
+**time** is a time of sending. In the test mode time for messages is sequence of integers starting with 1
+
+###selectRace
+#####Format:
+    {
+      "action": "selectRace",
+      "sid": <sid>,
+      "position": <position>
+    }
+#####Success:
+       {"result": "ok", "tokenBadgeId": tokenBadgeId}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "badPosition"},
+      {"result": "badMoneyAmount"},
+      {"result": "badStage"}
+
+      
+#####Description:
+Select rase which has position <position> on the desk 
+
+**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
+
+**position** is a position of token badge on the desk. It must not negative and less or equals 5, otherwise function returns`{"result": "badPosition"}`
+When you choose rase you have to pay one coin for every rase with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`
+<coins to pay> = <number of visible rases> - <position> - 1 
+
+You can choose rase only when you have no active rase, otherwise it returns`{"result": "badStage"}`
+
+
