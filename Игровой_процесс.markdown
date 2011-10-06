@@ -1,0 +1,29 @@
+######setReadinessStatus
+    TODO:
+
+######selectRace
+    TODO:
+
+######conquer
+    TODO:
+
+######decline
+    TODO:
+
+######finishTurn
+    TODO:
+
+######redeploy
+    TODO:
+
+######defend
+    TODO:
+
+######enchant
+    TODO:
+
+#####getVisibleTokenBadges
+    TODO:
+
+####throwDice
+    TODO:

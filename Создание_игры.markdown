@@ -1,0 +1,48 @@
+###createGame
+#####Format:
+    {
+      "action": "createGame",
+      "sid": <sid>,
+      "gameName": "<gameName>",
+      "mapId": <mapId>,
+      "playersNum": <playersNum>,
+      "gameDescr": "<gameDescription>" //optional
+    }
+#####Success:
+      {"result": "ok", "gameId": <gameId>}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "badMap"},
+      {"result": "badNumberOfPlayers"},
+      {"result": "badGameName"},
+      {"result": "badGameDescription"}
+      
+#####Description:
+Создание новой игры.
+
+**gameName** - строка из 1-50 символов. Иначе возарвщается `{"result": "badGameName"}`. 
+
+**mapId** - id карты, имеющейся на сервере. Иначе возарвщается `{"result": "badMap"}`
+
+**playersNum** - целое число, которые  **меньше либо равно** playerNum
+  выбранной карты, иначе возвращается `{"result": "badnumberOfPPlayers"}`)
+
+**gameDescription** необязательное поле. Строка не длинее 300
+  символов. Иначе `{"result": "badGameDescription"}`
+
+
+######createGame
+    TODO:
+
+######getGameList
+    TODO:
+
+######joinGame
+    TODO:
+    
+######leaveGame
+    TODO:
+
+

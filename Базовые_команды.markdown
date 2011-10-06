@@ -1,0 +1,95 @@
+Базовые команды
+--------------
+  
+
+###resetServer
+#####Format:
+    {
+      "action": "resetServer"
+    }
+#####Success:
+    {
+      "result" "ok"
+    }
+#####Fail:
+    Not defined.
+#####Description:
+Очищает базу данные сервера. Необходимо для тестирования.
+  
+###Register
+#####Format:
+    {
+      "action" : "register", 
+      "username" : "<name>",
+      "password" : "<password>"
+    }
+
+<**name**> - строка состоящая из 3-16 символов, начиная с латинской
+буквы. Может содержать латинские буквы, цифры, символ нижнего подчерка '_'
+и дефис '-'.
+<**password**> - строка из 6-18 произвольных символов ASCII.
+    
+#####Success:
+    {'result': 'ok'}
+    
+#####Fail:
+    {'result': 'badPassword' },
+    {'result': 'badUsername' },
+    {'result': 'badJson' },
+    {'result': 'usernameTaken' },
+    
+#####Description:
+Регистрация пользователя.
+
+###Login
+#####Format:
+    {
+      "action" : "login", 
+      "username" : "<name>",
+      "password" : "<password>"
+    }
+    
+#####Success:
+    {'result': 'ok', 'sid': <sid>}
+    
+#####Fail:
+    {'result': 'badJson'},
+    {'result': 'badUsernameOrPassword'}
+    
+#####Description:
+Аутентефикая пользователя. Сервер возвращает идентефикатор сессии
+**sid**, необходимый для совершения последующий действий
+пользоваетлем.
+Для тестирования sid-ы это целые числа, начиная с 1цы.
+
+###Logout
+#####Format:
+    {
+      "action" : "logout", 
+      "sid" : <sid>,
+    }
+
+#####Success:
+    {'result': 'ok'}
+    
+#####Fail:
+    {'result': 'badJson'},
+    {'result': 'badSid'}
+    
+      
+###doSmth
+#####Format:
+    {
+      "action" : "doSmtn", 
+      "sid" : <sid>,
+    }
+#####Success:
+      {'result': 'ok'}
+    
+#####Fail:
+    {'result': 'badJson'},
+    {'result': 'badSid'}
+    
+#####Description:
+Для тестирования. Команда, которая не делает ничего.
+  
