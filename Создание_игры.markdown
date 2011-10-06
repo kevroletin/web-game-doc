@@ -33,9 +33,6 @@
   символов. Иначе `{"result": "badGameDescription"}`
 
 
-######createGame
-    TODO:
-
 ######getGameList
     TODO:
 
