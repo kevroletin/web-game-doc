@@ -1,29 +1,87 @@
-######setReadinessStatus
+###setReadinessStatus
+#####Format:
+    {
+      "action": "setReadinessStatus",
+      "sid": <sid>,
+      "readinessStatus": <status>
+    }
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "notInGame"},
+	  {"result": "badGameState"},
+      {"result": "badReadinessStatus"}
+      
+#####Description:
+<**status**> - 1(готов) или 0(не готов). Иначе возвращается `{"result": "badReadinessStatus"}`
+ 
+Устанавливает статус готовности пользователя. Если пользователь
+установил статус в 1 и больше нет пользователей со статусом 0, то игра
+изменяет статус на 'processing'.
+
+Если пользователь не участвует в игре, возвращается `{"result":
+"notInGame"}`.
+
+Пользователь может менять статус готовности, только если игра в
+статусе 'waiting'. Иначе возвращается `{"result": "badGameState"}`
+
+
+###selectRace
+#####Format:
+    {
+      "action": "selectRace",
+      "sid": <sid>,
+      "position": <position>
+    }
+#####Success:
+    {"result": "ok", "tokenBadgeId": tokenBadgeId}
+      
+#####Fail:
+    {"result": "badJson"},
+    {"result": "badSid"},
+    {"result": "badPosition"},
+    {"result": "badMoneyAmount"},
+    {"result": "badStage"}
+
+#####Description:
+Выбрать рассу, имеющую окажунную позицию на столе.
+
+**position** - позиция карты с рассой на столе. Целое число в
+промежутке [0, 5]. Иначе возвращается `{"result": "badPosition"}`
+
+При выборе рассы необходима заплатить число монет, равное позиции
+карточки с рассой. Если игрок имеет недостаточно монет возвращается 
+`{"result": "badMoneyAmount"}`.
+
+TODO: "coins to pay" = "number of visible rases" - "position" - 1 
+
+Игрок может выбирать рассу, только если он не имеет активных
+расс. Иначе возвращается `{"result": "badStage"}`
+
+
+###conquer
     TODO:
 
-######selectRace
+###decline
     TODO:
 
-######conquer
+###finishTurn
     TODO:
 
-######decline
+###redeploy
     TODO:
 
-######finishTurn
+###defend
     TODO:
 
-######redeploy
+###enchant
     TODO:
 
-######defend
+###getVisibleTokenBadges
     TODO:
 
-######enchant
-    TODO:
-
-#####getVisibleTokenBadges
-    TODO:
-
-####throwDice
+###throwDice
     TODO:

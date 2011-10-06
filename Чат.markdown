@@ -1,5 +1,41 @@
-######sendMessage
-    TODO:
+###getMessages
+#####Format:
+    {
+      "action": "getMessages",
+      "since": <since>
+    }
+#####Success:
+    {"result": "ok", "messages": messages}
+      
+#####Fail:
+    {"result": "badJson"}
+      
+#####Description:
+Позвращает последие 100 собщений, отосланных не позднее, чем <time>
 
-######getMessages
-    TODO:
+**messages** - список объёктов в формате `{"userId": userId, "text":
+  text, "time": time}`
+
+**time** - TODO:
+
+
+###sendMessage
+#####Format:
+    {
+      "action": "sendMessage",
+      "sid": <sid>,
+       "text": "<text>"
+    }
+#####Success:
+      {"result": "ok", , "time": time}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"}
+      
+#####Description:
+Отправляет сообщение в чат.
+
+<**text**> - текст сообщения. Ограничения: TODO:
+
+**time** - TODO: In the test mode time for messages is sequence of integers starting with 1

@@ -142,10 +142,19 @@
     { "result": "ok" }
 
 #####Fail:
+Помимо стандартных:
+    {"result": "badGameId"},
     { "result": "alreadyInGame" }
-    { "result": "badGameState" } - игра уже началась
+    { "result": "badGameState" }
     { "result": "tooManyPlayers" }
-    
+#####Description:
+Если статус игры не 'waiting the begining' возвращается `{"result":
+"badGameState"}`.
+Если пользователь уже участвует в начавшейся или ожидающей начала игре
+возвращается `{"result": "alreadyInGame"}`
+Если число игроково ожидающих начало игры уже равно максимальному
+числу игроков на карте возвращается `{"result": "tooManyPlayers"}`
+
 ###leaveGame
 #####Format:
     {
@@ -154,4 +163,13 @@
     };
 #####Success:
     {'result' => 'ok' };
+
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "notInGame"}
+#####Description:
+Пользователь покидает игру.
+Если пользоваель не участвует в указанной игре возвращается
+      `{"result": "notInGame"}`
 
