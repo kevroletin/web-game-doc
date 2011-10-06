@@ -1,88 +1,77 @@
-d**SMALLWORLD** - ALPHA EDITION
+**SMALLWORLD** - ALPHA EDITION
 Version 0.001
 Readme File
 September 15, 2011
 
 
-About This Document:
+Предисловие:
 ===================
 
-This README file includes information that pertains to general
-problems and questions you may have concerning the program or your
-computer. 
-Should you experience any problems with SMALLWORLD - ALPHA EDITION, please refer to this file 
-for additional help on answering questions about the program and solving technical difficulties.
+Спецификация протокола игры SMALLWORLD.
 
-TABLE OF CONTENTS
+Содержание
 =================
 
-1. INTRODUCTION
-1. UNDOCUMENTED FEATURES
-1. SYSTEM REQUIREMENTS
-1. KNOWN ISSUES
-1. PROTOCOL DESCRIPTION
-1. CONTACTING DEVELOPERS   
+1. Введение
+1. Незадокументированные особенности
+1. Известные проблемы
+1. Описание протокола
+1. Контакты разработчиков
 
 
-I. INTRODUCTION
+I. Введение
 ===============
-SMALLWORLD is JSON-based client-server application. Details are yet to be revealed.
+SMALLWORLD - приложение, основанное на модели клиент-сервер с
+использованием JSON.
 
-II. UNDOCUMENTED FEATURES
+II. Незадокументированные особенности
 =========================
-Will have to add them later.
 
-III.  SYSTEM REQUIREMENTS
-=========================
-**Someone fill this section for me.**
 
-IV.  KNOWN ISSUES
+III. Известные проблемы
 =================
-Everything works just fine.
 
-V.  PROTOCOL DESCRIPTION
+V.  Описание протокола
 ========================
+Сервер получает **JSON** объёкт в теле **http POST** запроса. Формат
+**JSON** объекта в запросе и допустимые ответы сервера описаны ниже
 
-Server receives **JSON** messages sent via **http POST** in request
-**body**. Typical responses are described below under TYPICAL
-RESPONSES title.
-
-
-TEST QUERY
+Тестовый запрос
 ----------
-Each query must be JSON object with "test" and "description"(optional) field.
-"test" field is list or just one JSON object that describes the query.
-All possible types of queries and its formats are described in section BASIC COMMANDS
+Для тестирование допустакается следующее необязательное расширение
+протокола:
+тестовый запрос это JSON объект, содержащий 2 поля: "test" и
+"description"(опциональное). Поле "test" - список JSON объектов, каждый из которых является валидной
+командой серверу. Формат и доступные команды специфицированы в этом
+докумете и приложениях.
 
-TYPICAL RESPONSES
+Типичный ответ
 -----------------
-**Response** is a list of JSON objects created in following format:
+**Response** объект JSON следующего формата (в случае тестового
+запроса список следующих объектов):
 
     {
       'result': <ans>,
       other fields with parameters 
     },
 
-<**ans**> can possess one of the following values:
+<**ans**> может имеет одно из следующих значений(или другие значения -
+в зависимости от переданного запроса):
 
-* ok: String or list containing this word in lower case usually means that operation went succesfully. 
-* badAction: Action field from JSON query is unknown for server
-* badJson: Incorrent format of JSON message were received. Read the BASIC COMMANDS subsection below for more information on the subject.
-* badUsername: Entered username is not allowed. Check out "registration" command format in BASIC COMMANDS subsection.
-* badPassword: Entered password is not allowed. Same advice as before.
-* usernameTaken: Pretty much self-explanatory. Think up a new one.
-* badUsernameOrPassword: Either user with this username hasn't signed up yet or password differs from one entered during registration.
-* userLoggedIn: User was trying to log in without loggin' out first. Regrettably, it's not possible yet.
-* badSid: User was trying to do something with incorrect session id. Read "Logout" command description to understand what kind of sid you can use.
+* `ok`: Операция завершена успешно. 
+* `badAction`: Поле `action` содержит недопустимое значение.
+* `badJson`: Невалидный JSON в запросе, либо в перереданном объекте
+отсутствут все поля, необходимые для переданного в запросе action.
+* `badUsername`: Переданно недопустимое имя пользователя.
+* `badPassword`: Передан недопустимый пароль.
+* `usernameTaken`: Пользователь с заданным именем уже зарегестрирован.
+* `badUsernameOrPassword`: Неверное имя пользователя или пароль.
+* `badSid`: Клиент передал невалидный идентефикатор сессии.
 
-For "login" query the second field is `"sid": sid`
 
-BASIC COMMANDS
+Базовые команды
 --------------
   
-NOTE: Each command must be a list, that contains JSON objects. Each
-such JSON message should contain "action" field. Otherwise, 'badJson'
-error's to be expected.
 
 ###resetServer
 #####Format:
@@ -96,7 +85,7 @@ error's to be expected.
 #####Fail:
     Not defined.
 #####Description:
-Delets all data from database. Is needed for testing.
+Очищает базу данные сервера. Необходимо для тестирования.
   
 ###Register
 #####Format:
@@ -106,12 +95,10 @@ Delets all data from database. Is needed for testing.
       "password" : "<password>"
     }
 
-<**name**> is a 3-16 characters string starting from latin letter. It
-may contain latin letters, numbers, underlines, hyphens and nothing
-else
-      
-<**password**> is a 6-18 characters string. It may contain any ASCII
-character you like 
+<**name**> - строка состоящая из 3-16 символов, начиная с латинской
+буквы. Может содержать латинские буквы, цифры, символ нижнего подчерка '_'
+и дефис '-'.
+<**password**> - строка из 6-18 произвольных символов ASCII.
     
 #####Success:
     {'result': 'ok'}
@@ -123,9 +110,7 @@ character you like
     {'result': 'usernameTaken' },
     
 #####Description:
-Adds the user to the database so he can log in later. It's the only
-command unregistered user can execute.
-
+Регистрация пользователя.
 
 ###Login
 #####Format:
@@ -143,10 +128,10 @@ command unregistered user can execute.
     {'result': 'badUsernameOrPassword'}
     
 #####Description:
-Logs the user in. **Returns a pair containing the session ID**. For
-tests sids are generated as sequence of integers. User can't do
-anything (but register)  without being logged in first.
- 
+Аутентефикая пользователя. Сервер возвращает идентефикатор сессии
+**sid**, необходимый для совершения последующий действий
+пользоваетлем.
+Для тестирования sid-ы это целые числа, начиная с 1цы.
 
 ###Logout
 #####Format:
@@ -155,10 +140,6 @@ anything (but register)  without being logged in first.
       "sid" : <sid>,
     }
 
-<**sid**> is a number received from server when "login" command is
-executed. Anything else is not a <**sid**>.
-
-      
 #####Success:
     {'result': 'ok'}
     
@@ -166,8 +147,6 @@ executed. Anything else is not a <**sid**>.
     {'result': 'badJson'},
     {'result': 'badSid'}
     
-#####Description:
-Logs the user out. Logged out user can't use his sid anymore.
       
 ###doSmth
 #####Format:
@@ -183,10 +162,7 @@ Logs the user out. Logged out user can't use his sid anymore.
     {'result': 'badSid'}
     
 #####Description:
-Does something. Just for testing. Returns 'badJson' if the JSON object
-is incorrect, 'badSid' if there is no logged in user with the
-specified sid.
-
+Для тестирования. Команда, которая не делает ничего.
   
 ###uploadMap
 #####Format:
@@ -207,11 +183,11 @@ specified sid.
     {"result": "badPlayersNum"}
       
 #####Description:
-Creates a new map with mapName name, name must be UNIQUE string 
-with length less than 16 symbols, otherwise returns `{"result":
-"badMapName"}`. 
-The **playersNum** must be an integer in interval:[2, 5].
-**<regions>**
+Создаёт новую карту.
+**name** - уникальное имя карты - строка из 1-16 символов.
+**playersNum** - максимальное количество игроков на карте. Целое число
+из интервала [2, 5]
+**<regions>** - TODO:
       
 ###createGame
 #####Format:
@@ -235,22 +211,17 @@ The **playersNum** must be an integer in interval:[2, 5].
       {"result": "badGameDescription"}
       
 #####Description:
-Creates new game. 
+Создание новой игры.
 
-**Sid** must be a valid session id of one of users who doesn't play in
-  other game, otherwise returns `{"result": "badSid"}`
+**gameName** - строка из 1-50 символов. Иначе возарвщается `{"result": "badGameName"}`. 
 
-**gameName** must be **UNIQUE** string whose length is in interval [1,
-  50], otherwise function returns `{"result": "badGameName"}`. 
+**mapId** - id карты, имеющейся на сервере. Иначе возарвщается `{"result": "badMap"}`
 
-**mapId** must be valid id of map, otherwise returns {"result":
-  "badMap"}
+**playersNum** - целое число, которые  **меньше либо равно** playerNum
+  выбранной карты, иначе возвращается `{"result": "badnumberOfPPlayers"}`)
 
-**playersNum** is an integer that is **less or equal** to playerNum of chosen
-  map(otherwise `{"result": "badnumberOfPPlayers"}`)
-
-**gameDescription** is an optional field, whoset length must be less
-  than 300(`{"result": "badGameDescription"}` otherwise)
+**gameDescription** необязательное поле. Строка не длинее 300
+  символов. Иначе `{"result": "badGameDescription"}`
 
 ######sendMessage
     TODO:
