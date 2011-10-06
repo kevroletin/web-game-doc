@@ -1,4 +1,4 @@
-**SMALLWORLD** - ALPHA EDITION
+d**SMALLWORLD** - ALPHA EDITION
 Version 0.001
 Readme File
 September 15, 2011
@@ -83,6 +83,20 @@ BASIC COMMANDS
 NOTE: Each command must be a list, that contains JSON objects. Each
 such JSON message should contain "action" field. Otherwise, 'badJson'
 error's to be expected.
+
+###resetServer
+#####Format:
+    {
+      "action": "resetServer"
+    }
+#####Success:
+    {
+      "result" "ok"
+    }
+#####Fail:
+    Not defined.
+#####Description:
+Delets all data from database. Is needed for testing.
   
 ###Register
 #####Format:
@@ -180,7 +194,10 @@ specified sid.
       "action": "uploadMap",
       "mapName": "<mapName>",
       "playersNum": <playersNum>
+      "regions": <regions>
     }
+
+
 #####Success:
       {"result": "ok", "mapId": <mapId>}
     
@@ -193,8 +210,8 @@ specified sid.
 Creates a new map with mapName name, name must be UNIQUE string 
 with length less than 16 symbols, otherwise returns `{"result":
 "badMapName"}`. 
-
-      The playersNum must be an integer in interval:[2, 5].
+The **playersNum** must be an integer in interval:[2, 5].
+**<regions>**
       
 ###createGame
 #####Format:
@@ -229,9 +246,63 @@ Creates new game.
 **mapId** must be valid id of map, otherwise returns {"result":
   "badMap"}
 
-**playersNum** is an integer that is equal to playerNum of chosen
+**playersNum** is an integer that is **less or equal** to playerNum of chosen
   map(otherwise `{"result": "badnumberOfPPlayers"}`)
 
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
+
+######sendMessage
+    TODO:
+
+######getMessages
+    TODO:
+
+######createDefaultMaps
+    TODO:
+
+######uploadMap
+    TODO:
+
+######createGame
+    TODO:
+
+######getGameList
+    TODO:
+
+######joinGame
+    TODO:
+    
+######leaveGame
+    TODO:
+
+######setReadinessStatus
+    TODO:
+
+######selectRace
+    TODO:
+
+######conquer
+    TODO:
+
+######decline
+    TODO:
+
+######finishTurn
+    TODO:
+
+######redeploy
+    TODO:
+
+######defend
+    TODO:
+
+######enchant
+    TODO:
+
+#####getVisibleTokenBadges
+    TODO:
+
+####throwDice
+    TODO:
 
