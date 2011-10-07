@@ -192,12 +192,11 @@ specified sid.
 	  {"result": "badTurnsNum"}
       
 #####Description:
-Upload map with specified name, number of players, turns number and regions
+Creates a new map with mapName name, name must be UNIQUE string 
+with length less than 16 symbols, otherwise returns `{"result":
+"badMapName"}`. 
 
-**mapName** must be **UNIQUE** string whose length is in interval [1,
-  15], otherwise function returns `{"result": "badMapName"}`. 
-
-**playersNum** is an integer in interval[1, 5](otherwise `{"result": "badPlayersNum"}`)
+**playersNum** is an integer in interval[2, 5](otherwise `{"result": "badPlayersNum"}`)
   
 **turnsNum** is an integer in interval[5, 10](otherwise `{"result": "badTurnsNum"}`) 
   
@@ -568,7 +567,9 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
 #####Description:
 Get 100 last messages from <since> time
 
-**messages** is a list of objects such as {"userId": userId, "text": text, "time": time}
+**since** must be a positive float value, otherwise function returns `{"result": "badSid"}`
+
+**messages** is a list of objects such as {"userId": userId, "message": message, "mesTime": mesTime}
 
 ###sendMessage
 #####Format:
