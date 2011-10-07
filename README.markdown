@@ -173,37 +173,58 @@ Does something. Just for testing. Returns 'badJson' if the JSON object
 is incorrect, 'badSid' if there is no logged in user with the
 specified sid.
 
-  
 ###uploadMap
 #####Format:
     {
       "action": "uploadMap",
       "mapName": "<mapName>",
-      "playersNum": <playersNum>
+      "playersNum": <playersNum>,
+	  "turnsNum": <turnsNum>,
+	  "regions": [{"population": <population>, "landDescription": [<landDescription>], "adjacent": [<adjacentRegion>]}]
     }
 #####Success:
       {"result": "ok", "mapId": <mapId>}
-    
+      
 #####Fail:
-    {"result": "badJson"},
-    {"result": "badMapName"},
-    {"result": "badPlayersNum"}
+      {"result": "badJson"},
+      {"result": "badMapName"},
+      {"result": "badPlayersNum"},
+	  {"result": "badTurnsNum"}
       
 #####Description:
-Creates a new map with mapName name, name must be UNIQUE string 
-with length less than 16 symbols, otherwise returns `{"result":
-"badMapName"}`. 
+Upload map with specified name, number of players, turns number and regions
 
-      The playersNum must be an integer in interval:[2, 5].
-      
+**mapName** must be **UNIQUE** string whose length is in interval [1,
+  15], otherwise function returns `{"result": "badMapName"}`. 
+
+**playersNum** is an integer in interval[1, 5](otherwise `{"result": "badPlayersNum"}`)
+  
+**turnsNum** is an integer in interval[5, 10](otherwise `{"result": "badTurnsNum"}`) 
+  
+**regions** is a list of regions description. All regions in list are numerated in ascending order, starting from 1.
+Each description **must** include list of **adjacent regions**(number of regions), 
+and may  include **population** -- initial num of tokens of lost tribes and  
+list of **landDescription**, that can be evaluate to one of the following descriptions:
+	[
+		'border',
+		'coast',
+		'sea',
+		'mountain',
+		'mine',
+		'farmland',
+		'magic',
+		'forest',
+		'hill',
+		'swamp',
+		'cavern'
+	]
 ###createGame
 #####Format:
     {
       "action": "createGame",
       "sid": <sid>,
       "gameName": "<gameName>",
-      "mapId": <mapId>,
-      "playersNum": <playersNum>,
+      "mapId": <mapId>
       "gameDescr": "<gameDescription>" //optional
     }
 #####Success:
@@ -212,8 +233,7 @@ with length less than 16 symbols, otherwise returns `{"result":
 #####Fail:
       {"result": "badJson"},
       {"result": "badSid"},
-      {"result": "badMapId"},
-      {"result": "badNumberOfPlayers"},
+      {"result": "badMapId"}
       {"result": "badGameName"},
       {"result": "badGameDescription"}
       
@@ -235,28 +255,8 @@ Creates new game.
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
 
-###uploadMap
-#####Format:
-    {
-      "action": "uploadMap",
-      "mapName": "<mapName>",
-      "playersNum": <playersNum>,
-    }
-#####Success:
-      {"result": "ok", "mapId": <mapId>}
-      
-#####Fail:
-      {"result": "badJson"},
-      {"result": "badMapName"},
-      {"result": "badPlayersNum"}
-      
-#####Description:
-Upload map with specified name and number of players
+**regions** is list of region indexes for chosen map
 
-**mapName** must be **UNIQUE** string whose length is in interval [1,
-  15], otherwise function returns `{"result": "badMapName"}`. 
-
-**playersNum** is an integer in interval[1, 15](otherwise `{"result": "badPlayersNum"}`)
   
 ###createDefaultMaps
 #####Format:
@@ -270,7 +270,208 @@ Upload map with specified name and number of players
       The same as in uploadMap
       
 #####Description:
-Create 4 default maps: defaultMap1(playersNum = 2), defaultMap2(playersNum = 3), defaultMap3(playersNum = 4), defaultMap4(playersNum = 5)
+Create 7 default maps: 
+	{'mapName': 'defaultMap1', 'playersNum': 2, 'turnsNum': 5}, 
+	{'mapName': 'defaultMap2', 'playersNum': 3, 'turnsNum': 5},
+	{'mapName': 'defaultMap3', 'playersNum': 4, 'turnsNum': 5},
+	{'mapName': 'defaultMap4', 'playersNum': 5, 'turnsNum': 5},
+	{
+		'mapName': 'defaultMap5', 
+		'playersNum': 2, 
+		'turnsNum': 5,
+	 	'regions' : 
+	 	[
+	 		{
+	 			'population' : 1,
+	 			'landDescription' : ['mountain'],
+	 			'adjacent' : [3, 4] 
+	 		},
+	 		{
+	 			'population' : 1,
+	 			'landDescription' : ['sea'],
+	 			'adjacent' : [1, 4] 
+	 		},
+	 		{
+	 			'population' : 1,
+	 			'landDescription' : ['border', 'mountain'],
+	 			'adjacent' : [1] 
+	 		},
+	 		{
+	 			'population' : 1,
+	 			'landDescription' : ['coast'],
+	 			'adjacent' : [1, 2] 
+	 		}
+	 	]
+	},
+	{
+		'mapName': 'defaultMap6', 
+		'playersNum': 2, 
+		'turnsNum': 7,
+	 	'regions' : 
+	 	[
+	 		{
+	 			'landDescription' : ['sea', 'border'], #1
+	 			'adjacent' : [1, 16, 17] 
+	 		},
+	 		{
+	 			'landDescription' : ['mine', 'border', 'coast', 'forest'], #2
+	 			'adjacent' : [0, 17, 18, 2] 
+	 		},
+	 		{
+	 			'landDescription' : ['border', 'mountain'], #3
+	 			'adjacent' : [1, 18, 20, 3] 
+	 		},
+	 		{
+	 			'landDescription' : ['farmland', 'border'], #4
+	 			'adjacent' : [2, 20, 21, 4] 
+	 		},
+	 		{
+	 			'landDescription' : ['cavern', 'border', 'swamp'], #5
+	 			'adjacent' : [3, 21, 22, 5] 
+	 		},
+			{
+				'population': 1,
+	 			'landDescription' : ['forest', 'border'], #6
+	 			'adjacent' : [4, 22, 6] 
+	 		},
+			{
+	 			'landDescription' : ['mine', 'border', 'swamp'], #7
+	 			'adjacent' : [5, 22, 7, 23, 25] 
+	 		},
+	 		{
+	 			'landDescription' : ['border', 'mountain', 'coast'], #8
+	 			'adjacent' : [6, 25, 9, 8, 23] 
+	 		},
+	 		{
+	 			'landDescription' : ['border', 'sea'], #9
+	 			'adjacent' : [7, 9, 10] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['cavern', 'coast'], #10
+	 			'adjacent' : [8, 7, 10, 25] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['mine', 'coast', 'forest', 'border'], #11
+	 			'adjacent' : [9, 25, 26, 11] 
+	 		},
+	 		{
+	 			'landDescription' : ['forest', 'border'], #12
+	 			'adjacent' : [10, 26, 29, 12] 
+	 		},
+	 		{
+	 			'landDescription' : ['mountain', 'border'], #13
+	 			'adjacent' : [11, 29, 27, 13] 
+	 		},
+	 		{
+	 			'landDescription' : ['mountain', 'border'], #14
+	 			'adjacent' : [12, 27, 15, 14] 
+	 		},
+	 		{
+	 			'landDescription' : ['hill', 'border'], #15
+	 			'adjacent' : [13, 15] 
+	 		},
+	 		{
+	 			'landDescription' : ['farmland', 'magic', 'border'], #16
+	 			'adjacent' : [14, 19, 27, 16] 
+	 		},
+	 		{
+	 			'landDescription' : ['border', 'mountain', 'cavern', 'mine', #17 
+	 				'coast'],
+	 			'adjacent' : [15, 19, 0, 17] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['farmland', 'magic', 'coast'], #18
+	 			'adjacent' : [16, 19, 0, 18] 
+	 		},
+	 		{
+	 			'landDescription' : ['swamp'], #19
+	 			'adjacent' : [17, 2, 20, 1, 19] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['swamp'], #20
+	 			'adjacent' : [18, 27, 28, 20] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['hill', 'magic'], #21
+	 			'adjacent' : [19, 28, 2, 3, 21] 
+	 		},
+	 		{
+	 			'landDescription' : ['mountain', 'mine'], #22
+	 			'adjacent' : [20, 24, 28, 3, 4, 22] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['farmland'], #23
+	 			'adjacent' : [21, 24, 5, 4, 23] 
+	 		},
+	 		{
+	 			'landDescription' : ['hill', 'magic'], #24
+	 			'adjacent' : [22, 25, 6, 24, 7] 
+	 		},
+	 		{
+	 			'landDescription' : ['mountain', 'cavern'], #25
+	 			'adjacent' : [23, 21, 22, 28] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['farmland'], #26
+	 			'adjacent' : [24, 23, 6, 7, 9, 10, 26] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['swamp', 'magic'], #27
+	 			'adjacent' : [25, 10, 11, 29, 28] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['forest', 'cavern'], #28
+	 			'adjacent' : [28, 29, 12, 13, 15, 19] 
+	 		},
+	 		{
+	 			'landDescription' : ['sea'],
+	 			'adjacent' : [27, 19, 20, 21, 24, 26, 29]  #29
+	 		},
+	 		{
+	 			'landDescription' : ['hill'],  #30
+	 			'adjacent' : [28, 27, 12, 11, 26] 
+	 		},
+	 	]
+	},	{
+		'mapName': 'defaultMap7', 
+		'playersNum': 2, 
+		'turnsNum': 5,
+	 	'regions' : 
+	 	[
+	 		{
+	 			'landDescription' : ['border', 'mountain', 'mine', 'farmland','magic'],
+	 			'adjacent' : [2] 
+	 		},
+	 		{
+	 			'landDescription' : ['mountain'],
+	 			'adjacent' : [1, 3] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['mountain', 'mine'],
+	 			'adjacent' : [2, 4] 
+	 		},
+	 		{
+	 			'population': 1,
+	 			'landDescription' : ['mountain'],
+	 			'adjacent' : [3, 5] 
+	 		},
+			{
+	 			'landDescription' : ['mountain', 'mine'],
+	 			'adjacent' : [4] 
+	 		}
+	 	]
+	}	
+		
 
 ###joinGame
 #####Format:
@@ -327,7 +528,9 @@ If user doesn't play in any game, it returns {"result": "notInGame"}
     {
       "action": "setReadinessStatus",
       "sid": <sid>,
-	  "readinessStatus": <status>
+	  "readinessStatus": <status>,
+	  "visibleRaces": [<visibleRace>], 
+	  "visibleSpecialPower": [<visibleSpecialPower>]
     }
 #####Success:
       {"result": "ok"}
@@ -348,6 +551,8 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
 
 **status** may be equal to 0 if user isn't ready, and 1 if he/she is ready to play? otherwise function returns `{"result": "badReadinessStatus"}`  
 
+**visibleRaces** and **visibleSpecialPower** are optional settings, that are used only for testing. They must include the list of names of 6 races and specialPowers. Names must be correct. This commands allows determine what races will be on the desk at the beginning of the game.
+
 ###getMessages
 #####Format:
     {
@@ -355,7 +560,7 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
       "since": <since>
     }
 #####Success:
-       {"result": "ok", "mesArray": mesArray}
+       {"result": "ok", "messages": messages}
       
 #####Fail:
       {"result": "badJson"}
@@ -363,29 +568,266 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
 #####Description:
 Get 100 last messages from <since> time
 
-**since** must be a positive float value, otherwise function returns `{"result": "badSid"}`
-
-**mesArray** is a list of objects such as {"userId": userId, "message": message, "mesTime": mesTime}
+**messages** is a list of objects such as {"userId": userId, "text": text, "time": time}
 
 ###sendMessage
 #####Format:
     {
       "action": "sendMessage",
-      "userId": <userId>,
-	  "message": "<message>"
+      "sid": <sid>,
+	  "text": "<text>"
     }
 #####Success:
-      {"result": "ok", , "mesTime": mesTime}
+      {"result": "ok", , "time": time}
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badUserId"}
+      {"result": "badSid"}
       
 #####Description:
-Send message with "<message>" text from user with id = <userId>.
+Send message with <**text**> text from user with sid = <**Sid**>.
 
-**userId** must be a valid user id of one of users, otherwise it returns `{"result": "badUserId"}`
+**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
-**message** is a text that must be sent
+**text** is a text that must be sent
 
-**mesTime** is a time of sending
+**time** is a time of sending. In the test mode time for messages is sequence of integers starting with 1
+
+###selectRace
+#####Format:
+    {
+      "action": "selectRace",
+      "sid": <sid>,
+      "position": <position>
+    }
+#####Success:
+       {"result": "ok", "tokenBadgeId": tokenBadgeId}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badSid"},
+      {"result": "badPosition"},
+      {"result": "badMoneyAmount"},
+      {"result": "badStage"}
+
+      
+#####Description:
+Select race which has position <position> on the desk 
+
+**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
+
+**position** is a position of token badge on the desk. It must not negative and less or equals 5, otherwise function returns`{"result": "badPosition"}`
+When you choose race you have to pay one coin for every race with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`.
+
+"coins to pay" = "number of visible rases" - "position" - 1 
+
+You can choose rase only when you have no active race, otherwise it returns`{"result": "badStage"}`
+
+###resetServer
+#####Format:
+    {
+      "action": "resetServer",
+      "sid": <sid> //optional
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"}
+
+      
+#####Description:
+Returns server to the initial state(clear all tables in database)
+
+###conquer
+#####Format:
+    {
+      "action": "conquer",
+      "sid": <sid>,
+	  "regionId": <regionId>
+    }
+#####Success:
+       {"result": "ok", "dice": <dice> //optional}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badRegionId"},
+	  {"result": "badRegion"},
+	  {"result": "regionIsImmune"},
+	  {"result": "badStage"}
+	  
+
+#####Description:
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regionId** must be a valid region id of current map, otherwise function returns {"result": "badRegionId"}.
+User cannot attack the same token badge, and he can attack regions accordingly to rules, otherwise 
+If the region has dragon, hero or hole in the ground, function returns {"result": "badRegion"}.
+This command can be executed only after followng commands: ["conquer", "selectRace", "finishTurn", "throwDice", "defend"].
+User cannot attack if the attacked in previous command user didn't defend, but he could(there were tokens for redeployment), otherwise {"result": "badStage"}.
+If user hasn't enough tokens for the conquering, he throws dice, and it's the last his conquering on this turn. In this case function also returns "dice": <dice>
+
+###decline
+#####Format:
+    {
+      "action": "decline",
+      "sid": <sid>
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"}
+
+#####Description:
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+User may go in decline only if he has active race, otherwise {"result": "badStage"}
+This command can be executed only after following commands: [finishTurn, redeploy/*only for Stout special power*/], otherwise  {"result": "badStage"}
+
+###redeploy
+#####Format:
+    {
+      "action": "redeploy",
+      "sid": <sid>,
+	  "regions": [{"regionId": <regionId>, "tokensNum": <tokensNum>}],
+	  "encampments": [{"regionId": <regionId>, "encampmentsNum": <encampmentsNum>}],
+	  "fortifield": {"regionId": <regionId>},
+	  "heroes": ["regionId": <regionId>],
+	  "selectFriend": {"regionId": <regionId>, "friendId": <friendId>}
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badRegionId"},
+	  {"result": "badRegion"},
+	  {"result": "noTokensForRedeployment"},
+	  {"result": "userHasNotRegions"},
+	  {"result": "badTokensNum"},
+	  {"result": "badEncampmentsNum"},
+	  {"result": "tooManyFortifieldsInRegion"},
+	  {"result": "tooManyFortifieldsOnMap"},
+	  {"result": "tooManyFortifields"},
+	  {"result": "notEnoughEncampentsForRedeployment"},
+	  {"result": "badSetHeroCommand"},
+	  {"result": "badFriendId"},
+	  {"result": "badFriend"},
+	  
+#####Description:
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regions** must be a list of regions that belong this user and have his current race. The sum of tokensNum must be **equal** to the current total number of tokens, otherwise {"result": "badTokensNum"}. If user has not tokens, it returns  {"result": "userHasNotRegions"}. 
+**encampments** field can be executed only by user with Bivouacking special power. It consists of the list of regions that belong this user with this special power. Sum of encampmentsNum must not be greater than 5, otherwise it returns  {"result": "notEnoughEncampentsForRedeployment"}. 
+**fortifield** field can be executed only by user with special power Fortifield. It consists of only one field -- reftifield, where user wants to set the fortress. It can be the region of this user and this race, otherwise -- {"result": "badRegion"}. User can set only on fortress per regions, otherwise -- {"result": "tooManyFortifieldsInRegion"}. User cannot set more than current maximum number of fortresses, otherwise -- {"result": "tooManyFortifields"}
+**heroes** allows user with special power Heroic set two heroes on his regions. If the number of heroes greater than 2, it returns {"result": "badSetHeroCommand"}. 
+**selectFriend** allows user with special power Diplomat choose the friend. friendId must be id of the user, that plays in the same game, otherwise {"result": "badFriendId"}. It must be the id of user that wasn't attacked by current user on this turn, otherwise --  {"result": "badFriend"}.
+This command can be executed only after following commands: "conquer", "throwDice", "defend"
+
+###finishTurn
+#####Format:
+    {
+      "action": "finishTurn",
+      "sid": <sid>
+    }
+#####Success:
+       {"result": "ok", "coins": <coins>, "nextPlayer": <nextPlayer>}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"}
+
+#####Description:
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+It can be executed only after "decline" and "redeploy". It returns the current number of user coins -- <coins>. <nextPlayer> -- the identificator  of the next player. If it's the last player and last turn, it doesn't return <nextPlayer>.
+
+###defend
+#####Format:
+    {
+      "action": "defend",
+      "sid": <sid>,
+	  "regions": [{"regionId": <regionId>, "tokensNum": <tokensNum>}]
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"},
+	  {"result": "badRegionId"},
+	  {"result": "badRegion"},
+	  {"result": "badTokensNum"},
+	  {"result": "notEnoughTokens"},
+	  {"result": "thereAreTokensInTheHand"}
+
+#####Description:
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regions** is a list of regions that belong current user with the current race, otherwise {"result": "badRegion"}. If the user has regions that aren't adjacent to attacked regions, he cannot move tokens to the regions, that are adjacent to the attacked region, otherwise -- {"result": "badRegion"}. <tokensNum> -- the number of tokens that must be moved to the region with regionId. The sum of <tokensNum> must be **equal** to the number of attacked tokens, otherwise it returns {"result": "notEnoughTokens"} or {"result": "thereAreTokensInTheHand"}. This command can be executed only after conquering the region that belongs this user with this race. 
+
+###dragonAttack
+#####Format:
+    {
+      "action": "dragonAttack",
+      "sid": <sid>,
+	  "regionId": <regionId>
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"},
+	  {"result": "badRegionId"},
+	  {"result": "badRegion"}
+
+#####Description:
+Can be execetude only by special power Dragon master, otherwise {"result": "badStage"}
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regionId** must be a region of another tokenBadge, otherwise {"result": "badRegion"}
+Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "defend", otherwise {"result": "badStage"}
+
+###enchant
+#####Format:
+    {
+      "action": "enchant",
+      "sid": <sid>,
+	  "regionId": <regionId>
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"},
+	  {"result": "badRegionId"},
+	  {"result": "badRegion"}
+
+#####Description:
+Can be execetude only by race Sorcerers, otherwise {"result": "badStage"}
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regionId** must be a region of another tokenBadge that race isn't in decline and there is only one token on this region, otherwise {"result": "badRegion"}
+Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "defend", otherwise {"result": "badStage"}
+
+###throwDice
+#####Format:
+    {
+      "action": "throwDice",
+      "sid": <sid>
+    }
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+	  {"result": "badSid"},
+	  {"result": "badStage"}
+
+#####Description:
+Can be execetude only by special power Berserk, otherwise {"result": "badStage"}
+**sid** must be a session id of the current player, otherwise {"result": "badStage"}
+**regionId** must be a region of another tokenBadge that race isn't in decline and there is only one token on this region, otherwise {"result": "badRegion"}
+Can be executed only after "selectRace", "finishTurn", "conquer", "defend", otherwise {"result": "badStage"}
