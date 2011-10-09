@@ -192,12 +192,11 @@ specified sid.
 	  {"result": "badTurnsNum"}
       
 #####Description:
-Upload map with specified name, number of players, turns number and regions
+Creates a new map with mapName name, name must be UNIQUE string 
+with length less than 16 symbols, otherwise returns `{"result":
+"badMapName"}`. 
 
-**mapName** must be **UNIQUE** string whose length is in interval [1,
-  15], otherwise function returns `{"result": "badMapName"}`. 
-
-**playersNum** is an integer in interval[1, 5](otherwise `{"result": "badPlayersNum"}`)
+**playersNum** is an integer in interval[2, 5](otherwise `{"result": "badPlayersNum"}`)
   
 **turnsNum** is an integer in interval[5, 10](otherwise `{"result": "badTurnsNum"}`) 
   
@@ -568,7 +567,9 @@ User cannot change his readiness status if the game isn't in state 'waiting'(in 
 #####Description:
 Get 100 last messages from <since> time
 
-**messages** is a list of objects such as {"userId": userId, "text": text, "time": time}
+**since** must be a positive float value, otherwise function returns `{"result": "badSid"}`
+
+**messages** is a list of objects such as {"userId": userId, "message": message, "mesTime": mesTime}
 
 ###sendMessage
 #####Format:
@@ -693,8 +694,7 @@ This command can be executed only after following commands: [finishTurn, redeplo
 	  "regions": [{"regionId": <regionId>, "tokensNum": <tokensNum>}],
 	  "encampments": [{"regionId": <regionId>, "encampmentsNum": <encampmentsNum>}],
 	  "fortifield": {"regionId": <regionId>},
-	  "heroes": ["regionId": <regionId>],
-	  "selectFriend": {"regionId": <regionId>, "friendId": <friendId>}
+	  "heroes": ["regionId": <regionId>]
     }
 #####Success:
        {"result": "ok"}
@@ -711,9 +711,7 @@ This command can be executed only after following commands: [finishTurn, redeplo
 	  {"result": "tooManyFortifieldsOnMap"},
 	  {"result": "tooManyFortifields"},
 	  {"result": "notEnoughEncampentsForRedeployment"},
-	  {"result": "badSetHeroCommand"},
-	  {"result": "badFriendId"},
-	  {"result": "badFriend"},
+	  {"result": "badSetHeroCommand"}
 	  
 #####Description:
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
@@ -721,8 +719,26 @@ This command can be executed only after following commands: [finishTurn, redeplo
 **encampments** field can be executed only by user with Bivouacking special power. It consists of the list of regions that belong this user with this special power. Sum of encampmentsNum must not be greater than 5, otherwise it returns  {"result": "notEnoughEncampentsForRedeployment"}. 
 **fortifield** field can be executed only by user with special power Fortifield. It consists of only one field -- reftifield, where user wants to set the fortress. It can be the region of this user and this race, otherwise -- {"result": "badRegion"}. User can set only on fortress per regions, otherwise -- {"result": "tooManyFortifieldsInRegion"}. User cannot set more than current maximum number of fortresses, otherwise -- {"result": "tooManyFortifields"}
 **heroes** allows user with special power Heroic set two heroes on his regions. If the number of heroes greater than 2, it returns {"result": "badSetHeroCommand"}. 
-**selectFriend** allows user with special power Diplomat choose the friend. friendId must be id of the user, that plays in the same game, otherwise {"result": "badFriendId"}. It must be the id of user that wasn't attacked by current user on this turn, otherwise --  {"result": "badFriend"}.
+
 This command can be executed only after following commands: "conquer", "throwDice", "defend"
+
+###selectFriend
+####Format:
+	{
+		"action": "selectFriend",
+		"sid": <sid>,
+		"friendId": <friendId>
+	}
+	
+#####Success:
+       {"result": "ok"}
+      
+#####Fail:
+      {"result": "badFriendId"},
+	  {"result": "badFriend"}
+
+#####Description:	 
+Allows user with special power Diplomat choose the friend. friendId must be id of the user, that plays in the same game, otherwise {"result": "badFriendId"}. It must be the id of user who wasn't attacked by current user on this turn, otherwise --  {"result": "badFriend"}.
 
 ###finishTurn
 #####Format:
