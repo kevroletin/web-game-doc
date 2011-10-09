@@ -202,7 +202,7 @@ with length less than 16 symbols, otherwise returns `{"result":
   
 **regions** is a list of regions description. All regions in list are numerated in ascending order, starting from 1.
 Each description **must** include list of **adjacent regions**(number of regions), 
-and may  include **population** -- initial num of tokens of lost tribes and  
+and may  include **population** -- initial number of tokens of lost tribes and  
 list of **landDescription**, that can be evaluate to one of the following descriptions:
 	[
 		'border',
@@ -239,7 +239,7 @@ list of **landDescription**, that can be evaluate to one of the following descri
 #####Description:
 Creates new game. 
 
-**Sid** must be a valid session id of one of users who doesn't play in
+**Sid** must be a valid session id of one of users not playing any
   other game, otherwise returns `{"result": "badSid"}`
 
 **gameName** must be **UNIQUE** string whose length is in interval [1,
@@ -493,13 +493,12 @@ Create 7 default maps:
 #####Description:
 User with specified sid joins the game with id = gameId
 
-**Sid** must be a valid session id of one of users who doesn't play in
-  other game, otherwise returns `{"result": "badSid"}`
+**Sid** must be a valid session id of one of the users not playing any
+  other game, otherwise the function returns `{"result": "badSid"}`
 
-**gameId** must be valid id of game, otherwise returns {"result":
-  "badGameId"}
-If game status is not equal to 'waiting the begining', function returns {"result": "badGameState"}.
-If the user with specified session id is playing or waiting the begining of another game, it returns {"result": "alreadyInGame"}.
+**gameId** must be a valid id of game, otherwise returns {"result": "badGameId"}
+If game status isn't 'waiting', function returns {"result": "badGameState"}.
+If the user with specified session id playing or waiting the begining of another game, it returns {"result": "alreadyInGame"}.
 If there are no free space on map for new users, it returns {"result": "tooManyPlayers"}
 
 ###leaveGame
@@ -518,9 +517,9 @@ If there are no free space on map for new users, it returns {"result": "tooManyP
       
 #####Description:
 User with specified sid leaves the game
-If user doesn't play in any game, it returns {"result": "notInGame"}
+If user aren't playing any game, it returns {"result": "notInGame"}
 
-**Sid** must be a valid session id of one of users who plays in any game, otherwise returns `{"result": "badSid"}`
+**Sid** must be a valid session id of one of the users playing some game, otherwise returns `{"result": "badSid"}`
 
 ###setReadinessStatus
 #####Format:
@@ -543,14 +542,14 @@ If user doesn't play in any game, it returns {"result": "notInGame"}
       
 #####Description:
 Changes user's readiness status. If new status == 1 and it's the last ready user, the game transers to the state 'processing'.
-If user doesn't play in any game, it returns {"result": "notInGame"}.
+If user aren't playing any game, it returns {"result": "notInGame"}.
 User cannot change his readiness status if the game isn't in state 'waiting'(in other game states it returns {"result": "badGameState"})
 
 **Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
-**status** may be equal to 0 if user isn't ready, and 1 if he/she is ready to play? otherwise function returns `{"result": "badReadinessStatus"}`  
+**status** may be equal to 0 if the user isn't ready, and 1 if he/she is ready to play, otherwise function returns `{"result": "badReadinessStatus"}`  
 
-**visibleRaces** and **visibleSpecialPower** are optional settings, that are used only for testing. They must include the list of names of 6 races and specialPowers. Names must be correct. This commands allows determine what races will be on the desk at the beginning of the game.
+**visibleRaces** and **visibleSpecialPower** are optional settings used only for testing. They must include the list of names of 6 races and specialPowers. Names must be correct. This commands allows determine what races will be on the desk at the beginning of the game.
 
 ###getMessages
 #####Format:
@@ -590,9 +589,9 @@ Send message with <**text**> text from user with sid = <**Sid**>.
 
 **Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
 
-**text** is a text that must be sent
+**text** is the text user want to send
 
-**time** is a time of sending. In the test mode time for messages is sequence of integers starting with 1
+**time** is the time of sending. In the test mode time for messages is sequence of integers starting with 1
 
 ###selectRace
 #####Format:
@@ -613,16 +612,16 @@ Send message with <**text**> text from user with sid = <**Sid**>.
 
       
 #####Description:
-Select race which has position <position> on the desk 
+Select race with position <position> on the desk 
 
-**Sid** must be a valid session id of one of users who plays in game, otherwise it returns`{"result": "badSid"}`
+**Sid** must be a valid session id of one of users playing in game, otherwise it returns`{"result": "badSid"}`
 
-**position** is a position of token badge on the desk. It must not negative and less or equals 5, otherwise function returns`{"result": "badPosition"}`
-When you choose race you have to pay one coin for every race with position, whish is higher then you choise. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`.
+**position** is a position of token badge on the desk. It must not be negative and less or equals 5, otherwise the function returns`{"result": "badPosition"}`
+When you choose race you have to pay one coin for every race with position higher than position of race you choose. If you haven't enough coins to do it, the result will be `{"result": "badMoneyAmount"}`.
 
 "coins to pay" = "number of visible rases" - "position" - 1 
 
-You can choose rase only when you have no active race, otherwise it returns`{"result": "badStage"}`
+You can choose race only when you have no active race, otherwise it returns`{"result": "badStage"}`
 
 ###resetServer
 #####Format:
@@ -638,7 +637,7 @@ You can choose rase only when you have no active race, otherwise it returns`{"re
 
       
 #####Description:
-Returns server to the initial state(clear all tables in database)
+Returns server to the initial state(clears all tables in database)
 
 ###conquer
 #####Format:
@@ -663,9 +662,9 @@ Returns server to the initial state(clear all tables in database)
 **regionId** must be a valid region id of current map, otherwise function returns {"result": "badRegionId"}.
 User cannot attack the same token badge, and he can attack regions accordingly to rules, otherwise 
 If the region has dragon, hero or hole in the ground, function returns {"result": "badRegion"}.
-This command can be executed only after followng commands: ["conquer", "selectRace", "finishTurn", "throwDice", "defend"].
+This command can only be executed after followng commands: ["conquer", "selectRace", "finishTurn", "throwDice", "defend"].
 User cannot attack if the attacked in previous command user didn't defend, but he could(there were tokens for redeployment), otherwise {"result": "badStage"}.
-If user hasn't enough tokens for the conquering, he throws dice, and it's the last his conquering on this turn. In this case function also returns "dice": <dice>
+If user hasn't enough tokens for the conquering, he throws the dice, thus it would be his conquer on this turn. In this case function also returns "dice": <dice>
 
 ###decline
 #####Format:
@@ -684,7 +683,7 @@ If user hasn't enough tokens for the conquering, he throws dice, and it's the la
 #####Description:
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
 User may go in decline only if he has active race, otherwise {"result": "badStage"}
-This command can be executed only after following commands: [finishTurn, redeploy/*only for Stout special power*/], otherwise  {"result": "badStage"}
+This command can be only executed after following commands: [finishTurn, redeploy/*only for Stout special power*/], otherwise  {"result": "badStage"}
 
 ###redeploy
 #####Format:
@@ -704,7 +703,7 @@ This command can be executed only after following commands: [finishTurn, redeplo
 	  {"result": "badRegionId"},
 	  {"result": "badRegion"},
 	  {"result": "noTokensForRedeployment"},
-	  {"result": "userHasNotRegions"},
+	  {"result": "userHasNoRegions"},
 	  {"result": "badTokensNum"},
 	  {"result": "badEncampmentsNum"},
 	  {"result": "tooManyFortifieldsInRegion"},
@@ -756,7 +755,7 @@ Allows user with special power Diplomat choose the friend. friendId must be id o
 
 #####Description:
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
-It can be executed only after "decline" and "redeploy". It returns the current number of user coins -- <coins>. <nextPlayer> -- the identificator  of the next player. If it's the last player and last turn, it doesn't return <nextPlayer>.
+It can only be executed after "decline" and "redeploy" actions. It returns the current number of user coins -- <coins>. <nextPlayer> -- the identificator  of the next player. If it's the last player and last turn, it doesn't return <nextPlayer>.
 
 ###defend
 #####Format:
@@ -780,7 +779,7 @@ It can be executed only after "decline" and "redeploy". It returns the current n
 
 #####Description:
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
-**regions** is a list of regions that belong current user with the current race, otherwise {"result": "badRegion"}. If the user has regions that aren't adjacent to attacked regions, he cannot move tokens to the regions, that are adjacent to the attacked region, otherwise -- {"result": "badRegion"}. <tokensNum> -- the number of tokens that must be moved to the region with regionId. The sum of <tokensNum> must be **equal** to the number of attacked tokens, otherwise it returns {"result": "notEnoughTokens"} or {"result": "thereAreTokensInTheHand"}. This command can be executed only after conquering the region that belongs this user with this race. 
+**regions** is a list of regions belonging to the active user with the current race, otherwise {"result": "badRegion"}. If the user has regions that aren't adjacent to attacked regions, he cannot move tokens to the regions adjacent to the attacked region, otherwise -- {"result": "badRegion"}. <tokensNum> -- the number of tokens to be moved to the region with regionId. The sum of <tokensNum> must be **equal** to the number of attacked tokens, otherwise the function returns {"result": "notEnoughTokens"} or {"result": "thereAreTokensInTheHand"}. This command can only be executed after conquering the region that belongs this user with this race. 
 
 ###dragonAttack
 #####Format:
@@ -800,10 +799,10 @@ It can be executed only after "decline" and "redeploy". It returns the current n
 	  {"result": "badRegion"}
 
 #####Description:
-Can be execetude only by special power Dragon master, otherwise {"result": "badStage"}
+Can only be executed with special power Dragon master, otherwise {"result": "badStage"}
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
 **regionId** must be a region of another tokenBadge, otherwise {"result": "badRegion"}
-Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "defend", otherwise {"result": "badStage"}
+Can only be executed after "conquer", "selectRace", "finishTurn", "throwDice", "defend", otherwise {"result": "badStage"}
 
 ###enchant
 #####Format:
@@ -823,7 +822,7 @@ Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "
 	  {"result": "badRegion"}
 
 #####Description:
-Can be execetude only by race Sorcerers, otherwise {"result": "badStage"}
+Can  only be executed with the race Sorcerers, otherwise {"result": "badStage"}
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
 **regionId** must be a region of another tokenBadge that race isn't in decline and there is only one token on this region, otherwise {"result": "badRegion"}
 Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "defend", otherwise {"result": "badStage"}
@@ -843,7 +842,7 @@ Can be executed only after "conquer", "selectRace", "finishTurn", "throwDice", "
 	  {"result": "badStage"}
 
 #####Description:
-Can be execetude only by special power Berserk, otherwise {"result": "badStage"}
+Can only be executed with special power Berserk, otherwise {"result": "badStage"}
 **sid** must be a session id of the current player, otherwise {"result": "badStage"}
 **regionId** must be a region of another tokenBadge that race isn't in decline and there is only one token on this region, otherwise {"result": "badRegion"}
 Can be executed only after "selectRace", "finishTurn", "conquer", "defend", otherwise {"result": "badStage"}
