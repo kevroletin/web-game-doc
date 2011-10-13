@@ -1038,3 +1038,133 @@ Can be executed only after "selectRace", "finishTurn", "conquer",
 		GAME_ENDED = 3
 	**turn** -- current turn
 	
+	
+###getGameState
+#####Format:
+	{
+		"action": "getGameState",
+		"gameId": <gameId>
+	}
+#####Fail:
+	{
+		"result": "badGameId"
+	}
+#####Success:
+	{
+		"result": "ok",
+		"gameState": {
+			"gameId": <gameId>, 
+			"gameName": <gameName>, 
+			"gameDescription": <gameDescription>, 
+			"currentPlayersNum": <currentPlayersNum>, 
+			"activePlayerId": <activePlayerId>,
+			"state": <state>,
+			"currentTurn": <currentTurn>,
+			"map": {
+				"mapId": <mapId>,
+				"mapName": <mapName>,
+				"turnsNum": <turnsNum>,
+				"playersNum": <playersNum>,
+				"regions":[{
+					"constRegionState": [<constRegionParams>],
+					"adjacentRegions":[<adjacentRegion>],
+					"currentRegionState": {	
+						"ownerId": <ownerId>,
+						"tokenBadgeId": <tokenBadgeId>,
+						"tokensNum": <tokensNum>,
+						"holeInTheGround": <holeInTheGround>,
+						"encampment": <encampmentsNum>, 
+						"dragon": <dragon>, 
+						"fortifield": <fortifield>,
+						"hero": <hero>,
+						"inDecline": <inDecline>
+					}
+				}]
+			},
+			"players": [
+				{
+					"userId": <userId>, 
+					"username": <username>, 
+					"isReady": <isReady>,
+					"coins": <coins>,
+					"tokensInHand": <tokensInHand>,
+					"priority": <priority>,
+					"currentTokenBadge": {
+						"tokenBadgeId": <tokenBadgeId>, 
+						"totalTokensNum": <totalTokensNum>, 
+						"raceName": <raceName>,
+						"specialPowerName": <specialPowerName>
+					},	//optional
+					"declinedTokenBadge": {
+						"tokenBadgeId": <tokenBadgeId>, 
+						"totalTokensNum": <totalTokensNum>, 
+						"raceName": <raceName>,
+						"specialPowerName": <specialPowerName>
+					},
+				}]
+		}
+	}
+#####Description:
+
+	
+###getMapState
+#####Format:
+	{
+		"action": "getMapState",
+		"mapId": <mapId>
+	}
+#####Fail:
+	{
+		"result": "badMapId"
+	}
+#####Success:
+	{
+		"result": "ok",
+		"gameState": {
+			"map": {
+				"mapId": <mapId>,
+				"mapName": <mapName>,
+				"turnsNum": <turnsNum>,
+				"playersNum": <playersNum>,
+				"regions":[{
+					"constRegionState": [<constRegionParams>],
+					"adjacentRegions":[<adjacentRegion>],
+				}]
+			}
+		}
+	}
+#####Description:
+
+###saveGame
+#####Format:
+	{
+		"action": "saveGame",
+		"gameId": <gameId>
+	}
+#####Fail:
+	{
+		"result": "badGameId"
+	}
+#####Success:
+	{
+		"result": "ok",
+		"actions": [<sequence of json commands, where sid replaced to userId>]
+	}
+#####Description:
+
+###loadGame
+#####Format:
+	{
+		"action": "loadGame",
+		"gameId": <gameId>
+	}
+#####Fail:
+	{
+		"result": "badGameId"
+	},
+	//another possible error messages 
+#####Success:
+	{
+		"result": "ok",
+	}
+#####Description:
