@@ -1156,15 +1156,16 @@ Can be executed only after "selectRace", "finishTurn", "conquer",
 #####Format:
 	{
 		"action": "loadGame",
-		"gameId": <gameId>
+		"sid": <sid>
 	}
 #####Fail:
 	{
-		"result": "badGameId"
-	},
+		"result": "illegalAction"
+	}
 	//another possible error messages 
 #####Success:
 	{
 		"result": "ok",
 	}
 #####Description:
+	"result": "illegalAction" if action in command is one of the following: 'register', 'uploadMap', 'login', 'logout', 'saveGame', 'loadGame', 'resetServer', 'createDefaultMaps'
