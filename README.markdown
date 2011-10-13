@@ -142,7 +142,7 @@ else
 character you like 
     
 #####Success:
-    {'result': 'ok'}
+    {'result': 'ok', 'id': <userId>}
     
 #####Fail:
     {'result': 'badPassword' },
@@ -1001,3 +1001,36 @@ decline and there is only one token on this region, otherwise
 Can be executed only after "selectRace", "finishTurn", "conquer",
 "defend", otherwise `{"result": "badStage"}`
 
+###getGameList
+#####Format:
+	{
+		"action": "getGameList"
+	}
+#####Success:
+	{
+		"result": "ok",
+		"games": [{
+			"gameId": <gameId>, 
+			"gameName": <gameName>, 
+			"gameDescr": <gameDescr>, 
+			"playersNum": <playersNum>, 
+			"activePlayer": <activePlayerId>,
+			"state": <state>,
+			"turn": <turn>,
+			"mapId": <mapId>,
+			"players": [
+				{
+					"userId": <userId>, 
+					"username": <username>, 
+					"isReady": <isReady>
+				}]
+		}]
+	}
+#####Description:
+	**activePlayer** -- id of activePlayer
+	**playersNum** -- number of players that've joined to game
+	**state** can take one of the following values:
+		GAME_WAITING = 1
+		GAME_PROCESSING = 2
+		GAME_ENDED = 3
+	**turn** -- current turn
