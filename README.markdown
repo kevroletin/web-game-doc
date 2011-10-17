@@ -1183,11 +1183,15 @@ Receives the list of games.
 						"specialPowerName": <specialPowerName>
 					},
 				}],
-			"visibleTokenBadges": [{"raceName": <raceName>, "specialPowerName": <specialPowerName>, "position": <position>}]
+			"visibleTokenBadges": [{
+				"raceName": <raceName>, 
+				"specialPowerName": <specialPowerName>, 
+				"position": <position>, 
+				"bonusMoney": <bonusMoney>}]
 		}
 	}
 #####Description:
-	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, and their positions.
+	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, their positions and bonus money
 	
 ###getMapState
 #####Format:
