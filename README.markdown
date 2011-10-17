@@ -1102,11 +1102,12 @@ Can be executed only after "selectRace", "finishTurn", "conquer",
 						"raceName": <raceName>,
 						"specialPowerName": <specialPowerName>
 					},
-				}]
+				}],
+			"visibleTokenBadges": [{"raceName": <raceName>, "specialPowerName": <specialPowerName>, "position": <position>}]
 		}
 	}
 #####Description:
-
+	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, and their positions.
 	
 ###getMapState
 #####Format:
