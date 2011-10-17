@@ -99,7 +99,7 @@ TYPICAL RESPONSES
 * usernameTaken: Pretty much self-explanatory. Think up a new one.
 * badUsernameOrPassword: Either user with this username hasn't signed up yet or password differs from one entered during registration.
 * userLoggedIn: User was trying to log in without loggin' out first. Regrettably, it's not possible yet.
-* badSid: User was trying to do something with incorrect session id. Read "Logout" command description to understand what kind of sid you can use.
+* badUserSid: User was trying to do something with incorrect session id. Read "Logout" command description to understand what kind of sid you can use.
 
 For "login" query the second field is `"sid": sid`
 
@@ -142,7 +142,7 @@ else
 character you like 
     
 #####Success:
-    {'result': 'ok', 'id': <userId>}
+    {'result': 'ok'}
     
 #####Fail:
     {'result': 'badPassword' },
@@ -164,7 +164,7 @@ command unregistered user can execute.
     }
     
 #####Success:
-    {'result': 'ok', 'sid': <sid>}
+    {'result': 'ok', 'sid': <sid>, 'userId': <userId>}
     
 #####Fail:
     {'result': 'badJson'},
@@ -192,7 +192,7 @@ executed. Anything else is not a <**sid**>.
     
 #####Fail:
     {'result': 'badJson'},
-    {'result': 'badSid'}
+    {'result': 'badUserSid'}
     
 #####Description:
 Logs the user out. Logged out user can't use his sid anymore.
@@ -208,11 +208,11 @@ Logs the user out. Logged out user can't use his sid anymore.
     
 #####Fail:
     {'result': 'badJson'},
-    {'result': 'badSid'}
+    {'result': 'badUserSid'}
     
 #####Description:
 Does something. Just for testing. Returns 'badJson' if the JSON object
-is incorrect, 'badSid' if there is no logged in user with the
+is incorrect, 'badUserSid' if there is no logged in user with the
 specified sid.
 
 ###uploadMap
@@ -273,16 +273,17 @@ list of **landDescription**, that can be evaluate to one of the following descri
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badMapId"}
     {"result": "badGameName"},
-    {"result": "badGameDescription"}
+    {"result": "badGameDescription"},
+	{"result": "alreadyInGame"}
       
 #####Description:
 Creates new game. 
 
 **Sid** must be a valid session id of one of users not playing any
-  other game, otherwise returns `{"result": "badSid"}`
+  other game, otherwise returns `{"result": "badUserSid"}`
 
 **gameName** must be **UNIQUE** string whose length is in interval [1,
   50], otherwise function returns `{"result": "badGameName"}`. 
@@ -523,14 +524,14 @@ Create 7 default maps:
     {
       "action": "joinGame",
       "sid": <sid>,
-      "gameId": <gameName>
+      "gameId": <gameId>
     }
 #####Success:
       {"result": "ok"}
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badSid"},
+      {"result": "badUserSid"},
       {"result": "badGameId"},
       {"result": "badGameState"},
       {"result": "alreadyInGame"},
@@ -540,7 +541,7 @@ Create 7 default maps:
 User with specified sid joins the game with id = gameId
 
 **Sid** must be a valid session id of one of the users not playing any
-  other game, otherwise the function returns `{"result": "badSid"}`
+  other game, otherwise the function returns `{"result": "badUserSid"}`
 
 **gameId** must be a valid id of game, otherwise returns `{"result": "badGameId"}`
 If game status isn't 'waiting', function returns `{"result": "badGameState"}`.
@@ -561,7 +562,7 @@ If there are no free space on map for new users, it returns
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badSid"},
+      {"result": "badUserSid"},
       {"result": "notInGame"}
       
 #####Description:
@@ -569,7 +570,7 @@ User with specified sid leaves the game
 If user aren't playing any game, it returns `{"result": "notInGame"}`
 
 **Sid** must be a valid session id of one of the users playing some
-  game, otherwise returns `{"result": "badSid"}`
+  game, otherwise returns `{"result": "badUserSid"}`
 
 
 ###setReadinessStatus
@@ -577,7 +578,7 @@ If user aren't playing any game, it returns `{"result": "notInGame"}`
     {
       "action": "setReadinessStatus",
       "sid": <sid>,
-      "readinessStatus": <status>,
+      "isReady": <status>,
       "visibleRaces": [<visibleRace>], 
       "visibleSpecialPower": [<visibleSpecialPower>]
     }
@@ -586,7 +587,7 @@ If user aren't playing any game, it returns `{"result": "notInGame"}`
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badSid"},
+      {"result": "badUserSid"},
       {"result": "notInGame"},
       {"result": "badGameState"},
       {"result": "badReadinessStatus"}
@@ -602,7 +603,7 @@ User cannot change his readiness status if the game isn't in state
 
 
 **Sid** must be a valid session id of one of users who plays in game,
-otherwise it returns`{"result": "badSid"}`
+otherwise it returns`{"result": "badUserSid"}`
 
 
 **status** may be equal to 0 if the user isn't ready, and 1 if he/she
@@ -632,7 +633,7 @@ game.
 Get 100 last messages from <since> time
 
 **since** must be a positive float value, otherwise function returns
-`{"result": "badSid"}`
+`{"result": "badUserSid"}`
 
 **messages** is a list of objects such as {"userId": userId,
 "message": message, "mesTime": mesTime}
@@ -649,13 +650,13 @@ Get 100 last messages from <since> time
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"}
+    {"result": "badUserSid"}
       
 #####Description:
 Send message with <**text**> text from user with sid = <**Sid**>.
 
 **Sid** must be a valid session id of one of users who plays in game,
-  otherwise it returns`{"result": "badSid"}`
+  otherwise it returns`{"result": "badUserSid"}`
 
 **text** is the text user want to send
 
@@ -674,7 +675,7 @@ Send message with <**text**> text from user with sid = <**Sid**>.
       
 #####Fail:
       {"result": "badJson"},
-      {"result": "badSid"},
+      {"result": "badUserSid"},
       {"result": "badPosition"},
       {"result": "badMoneyAmount"},
       {"result": "badStage"}
@@ -684,7 +685,7 @@ Send message with <**text**> text from user with sid = <**Sid**>.
 Select race with position <position> on the desk 
 
 **Sid** must be a valid session id of one of users playing in game,
-otherwise it returns`{"result": "badSid"}`
+otherwise it returns`{"result": "badUserSid"}`
 
 
 **position** is a position of token badge on the desk. It must not be
@@ -751,7 +752,7 @@ returns "dice": <dice>
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"}
 
 #####Description:
@@ -860,7 +861,7 @@ wasn't attacked by current user on this turn, otherwise --
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"}
 
 #####Description:
@@ -886,7 +887,7 @@ returns the current number of user coins -- <coins>.
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"},
     {"result": "badRegionId"},
     {"result": "badRegion"},
@@ -925,7 +926,7 @@ conquering the region that belongs this user with this race.
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"},
     {"result": "badRegionId"},
     {"result": "badRegion"}
@@ -956,7 +957,7 @@ Can only be executed after "conquer", "selectRace", "finishTurn",
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"},
     {"result": "badRegionId"},
     {"result": "badRegion"}
@@ -987,7 +988,7 @@ Can be executed only after "conquer", "selectRace", "finishTurn",
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badSid"},
+    {"result": "badUserSid"},
     {"result": "badStage"}
 
 #####Description:
