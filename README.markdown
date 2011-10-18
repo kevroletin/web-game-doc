@@ -1096,10 +1096,11 @@ Can be executed only after "selectRace", "finishTurn", "conquer",
 			"gameId": <gameId>, 
 			"gameName": <gameName>, 
 			"gameDescr": <gameDescr>, 
-			"playersNum": <playersNum>, 
-			"activePlayer": <activePlayerId>,
+			"maxPlayersNum": <maxPlayersNum>, 
+			"activePlayerId": <activePlayerId>,
 			"state": <state>,
 			"turn": <turn>,
+			"turnsNum": <turnsNum>,
 			"mapId": <mapId>,
 			"players": [
 				{
@@ -1112,7 +1113,8 @@ Can be executed only after "selectRace", "finishTurn", "conquer",
 #####Description:
 Receives the list of games.
 	**activePlayer** -- id of activePlayer
-	**playersNum** -- number of players that've joined to game
+	**maxPlayersNum** -- number of players in map description
+	**turnsNum** -- number of this map turns, 
 	**state** can take one of the following values:
 		GAME_WAITING = 1
 		GAME_PROCESSING = 2
