@@ -53,7 +53,6 @@ COMMANDS LIST
 * Register
 * Login
 * Logout
-* doSmth
 * uploadMap
 * createGame
 * createDefaultMaps
@@ -212,9 +211,10 @@ Logs the user out. Logged out user can't use his sid anymore.
 #####Fail:
     {"result": "badJson"},
     {"result": "mapNameTaken"},
-	{"result": "badMapName"},
+    {"result": "badMapName"},
     {"result": "badPlayersNum"},
     {"result": "badTurnsNum"}
+    {"result": "badRegions"}
       
 #####Description:
 Creates a new map with mapName name, name must be UNIQUE string 
@@ -228,7 +228,7 @@ with length less than 16 symbols, otherwise returns either
   
 **regions** is a list of regions description. All regions in list are numerated in ascending order, starting from 1.
 Each description **must** include list of **adjacent regions**(number of regions), 
-and may  include **population** -- initial number of tokens of lost tribes and  
+and may include **population** -- initial number of tokens of lost tribes and  
 list of **landDescription**, that can be evaluate to one of the following descriptions:
     [
         'border',
@@ -242,7 +242,10 @@ list of **landDescription**, that can be evaluate to one of the following descri
         'hill',
         'swamp',
         'cavern'
-    ]
+    ], otherwise returns `{"result": "badRegions"}`
+If adjacent regions links aren't double-sided or sum of regions population more then 
+maximum number of lost tribes tokens, also returns `{"result": "badRegions"}`
+      
 ###createGame
 #####Format:
     {
@@ -262,17 +265,20 @@ list of **landDescription**, that can be evaluate to one of the following descri
     {"result": "badGameName"},
     {"result": "gameNameTaken"},
     {"result": "badGameDescription"},
-	{"result": "alreadyInGame"}
+    {"result": "alreadyInGame"}
       
 #####Description:
-Creates new game. 
+Creates new game.
 
-**Sid** must be a valid session id of one of users not playing any
-  other game, otherwise returns `{"result": "badUserSid"}`
+**Sid** must be a valid session id of one of users,
+  otherwise returns `{"result": "badUserSid"}`
+
+If the user with specified session id playing or waiting the begining
+of another game, it returns `{"result": "alreadyInGame"}`.
 
 **gameName** must be **UNIQUE** string whose length is in interval [1,
   50], otherwise function returns either {"result": "gameNameTaken"} or
-  `{"result": "badGameName"}`. 
+  `{"result": "badGameName"}`.
 
 **mapId** must be valid id of map, otherwise returns {"result":
   "badMapId"}
@@ -298,10 +304,10 @@ Creates new game.
       The same as in uploadMap
       
 #####Description:
-Create 7 default maps: 
+Create 7 default maps:
 
 [
-	{'mapName': 'defaultMap1', 'playersNum': 2, 'turnsNum': 5}, 
+	{'mapName': 'defaultMap1', 'playersNum': 2, 'turnsNum': 5},
 	{'mapName': 'defaultMap2', 'playersNum': 3, 'turnsNum': 5},
 	{'mapName': 'defaultMap3', 'playersNum': 4, 'turnsNum': 5},
 	{'mapName': 'defaultMap4', 'playersNum': 5, 'turnsNum': 5},
@@ -526,8 +532,8 @@ Create 7 default maps:
 #####Description:
 User with specified sid joins the game with id = gameId
 
-**Sid** must be a valid session id of one of the users not playing any
-  other game, otherwise the function returns `{"result": "badUserSid"}`
+**Sid** must be a valid session id of one of the users,
+  otherwise the function returns `{"result": "badUserSid"}`
 
 **gameId** must be a valid id of game, otherwise returns `{"result": "badGameId"}`
 If game status isn't 'waiting', function returns `{"result": "badGameState"}`.
@@ -616,13 +622,15 @@ game.
     {"result": "badJson"}
       
 #####Description:
-Get 100 last messages from <since> time
+Get 100 last messages with ids greater then <since>
 
-**since** must be a positive float value, otherwise function returns
-`{"result": "badUserSid"}`
+**since** must be a not negative integer value, otherwise function returns
+`{"result": "badSince"}`
 
-**messages** is a list of objects such as {"userId": userId,
-"message": message, "mesTime": mesTime}
+**messages** is a list of objects such as {"id": id,
+"text": text, "time": time, "userId": userId}
+
+In the test mode time of message is equal its id
 
 ###sendMessage
 #####Format:
@@ -632,22 +640,21 @@ Get 100 last messages from <since> time
       "text": "<text>"
     }
 #####Success:
-    {"result": "ok", , "time": time}
+    {"result": "ok"}
       
 #####Fail:
     {"result": "badJson"},
-    {"result": "badUserSid"}
+    {"result": "badUserSid"},
+    {"result": "badMessageText"}
       
 #####Description:
 Sends a message with <**text**> text from user with sid = <**Sid**>.
 
-**Sid** must be a valid session id of one of users who plays in game,
+**Sid** must be a valid session id of one of users,
   otherwise it returns`{"result": "badUserSid"}`
 
-**text** is the text user want to send
-
-**time** is the time of sending. In the test mode time for messages is
-  sequence of integers starting with 1
+**text** is the text user want to send, whose length must be less
+  than 300(`{"result": "badMessageText"}` otherwise)
 
 ###selectRace
 #####Format:
