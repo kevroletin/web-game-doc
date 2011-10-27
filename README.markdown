@@ -804,7 +804,7 @@ This command can be only executed after following commands:
       "sid": <sid>,
       "regions": [{"regionId": <regionId>, "tokensNum": <tokensNum>}],
       "encampments": [{"regionId": <regionId>, "encampmentsNum": <encampmentsNum>}],
-      "fortifield": {"regionId": <regionId>},
+      "fortified": {"regionId": <regionId>},
       "heroes": ["regionId": <regionId>]
     }
 #####Success:
@@ -816,12 +816,12 @@ This command can be only executed after following commands:
     {"result": "badRegionId"},
     {"result": "badRegion"},
     {"result": "noTokensForRedeployment"},
-    {"result": "userHasNoRegions"},
+    {"result": "userHasNotRegions"},
     {"result": "badTokensNum"},
     {"result": "badEncampmentsNum"},
-    {"result": "tooManyFortifieldsInRegion"},
-    {"result": "tooManyFortifieldsOnMap"},
-    {"result": "tooManyFortifields"},
+    {"result": "tooManyFortifiedsInRegion"},
+    {"result": "tooManyFortifiedsOnMap"},
+    {"result": "tooManyFortifieds"},
     {"result": "notEnoughEncampentsForRedeployment"},
     {"result": "badSetHeroCommand"}
       
@@ -847,14 +847,14 @@ user with this special power. Sum of encampmentsNum must not be
 greater than 5, otherwise it returns  
 `{"result": "notEnoughEncampentsForRedeployment"}`. 
 
-**fortifield** field can be executed only by user with special power
-Fortifield. It consists of only one field -- reftifield, where user
+**fortified** field can be executed only by user with special power
+Fortified. It consists of only one field -- reftifield, where user
 wants to set the fortress. It can be the region of this user and this
 race, otherwise -- `{"result": "badRegion"}`. User can set only on
 fortress per regions, otherwise -- 
-`{"result": "tooManyFortifieldsInRegion"}`. User cannot set more than current
+`{"result": "tooManyFortifiedsInRegion"}`. User cannot set more than current
 maximum number of fortresses, otherwise -- 
-`{"result": "tooManyFortifields"}`
+`{"result": "tooManyFortifieds"}`
 
 **heroes** allows user with special power Heroic set two heroes on his
   regions. If the number of heroes greater than 2, it returns
@@ -1165,7 +1165,7 @@ Receives the list of games.
 						"holeInTheGround": <holeInTheGround>,
 						"encampment": <encampmentsNum>, 
 						"dragon": <dragon>, 
-						"fortifield": <fortifield>,
+						"fortified": <fortified>,
 						"hero": <hero>,
 						"inDecline": <inDecline>
 					}
