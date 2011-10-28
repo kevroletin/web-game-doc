@@ -693,7 +693,7 @@ position higher than position of race you choose. If you haven't
 enough coins to do it, the result will be `{"result":
 "badMoneyAmount"}`.
 
-"coins to pay" = "number of visible rases" - "position" - 1 
+"coins to pay" = "position"
 
 You can choose race only when you have no active race, otherwise it
 returns`{"result": "badStage"}`
@@ -1200,7 +1200,8 @@ Receives the list of games.
 		}
 	}
 #####Description:
-	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, their positions and bonus money
+	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, their positions and bonus money.
+    First pair cost 0 coins, second -- 1 coins etc.
 	
 ###getMapState
 #####Format:
