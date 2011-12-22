@@ -1253,11 +1253,14 @@ Receives the list of games.
 #####Format:
 	{
 		"action": "loadGame",
-		"sid": <sid>
+		"actions": [<sequence of json commands, where sid replaced to userId>]
 	}
 #####Fail:
     {
         "result": "userNotLoggedIn"
+    }
+    {
+        "result": "badActions"
     }
 	{
 		"result": "illegalAction"
@@ -1274,6 +1277,8 @@ Receives the list of games.
 	'createDefaultMaps'
     "result": "userNotLoggedIn" if some user from game not
     logged in yet
+    "result": "badActions" if not exists field "actions" or
+    it's not list
 	
 VI.  RACE DESCRIPTION
 ========================
