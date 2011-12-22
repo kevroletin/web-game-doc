@@ -1247,6 +1247,7 @@ Receives the list of games.
 		"actions": [<sequence of json commands, where sid replaced to userId>]
 	}
 #####Description:
+    In action "createGame" should be field "randseed".
 
 ###loadGame
 #####Format:
@@ -1255,6 +1256,9 @@ Receives the list of games.
 		"sid": <sid>
 	}
 #####Fail:
+    {
+        "result": "userNotLoggedIn"
+    }
 	{
 		"result": "illegalAction"
 	}
@@ -1268,6 +1272,8 @@ Receives the list of games.
 	the following: 'register', 'uploadMap', 'login', 
 	'logout', 'saveGame', 'loadGame', 'resetServer', 
 	'createDefaultMaps'
+    "result": "userNotLoggedIn" if some user from game not
+    logged in yet
 	
 VI.  RACE DESCRIPTION
 ========================
