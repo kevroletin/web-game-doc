@@ -57,6 +57,7 @@ COMMANDS LIST
 * createGame
 * createDefaultMaps
 * joinGame
+* aiJoin
 * leaveGame
 * setReadinessStatus
 * getMessages
@@ -72,6 +73,11 @@ COMMANDS LIST
 * dragonAttack
 * enchant
 * throwDice
+* getGameList
+* getGameState
+* getMapList
+* saveGame
+* loadGame
 
 TEST QUERY
 ----------
@@ -252,8 +258,9 @@ maximum number of lost tribes tokens, also returns `{"result": "badRegions"}`
       "action": "createGame",
       "sid": <sid>,
       "gameName": "<gameName>",
-      "mapId": <mapId>
-      "gameDescr": "<gameDescription>" //optional
+      "mapId": <mapId>,
+      "gameDescr": "<gameDescription>", //optional
+	  "ai": <aiQuantity> //optional
     }
 #####Success:
     {"result": "ok", "gameId": <gameId>}
@@ -265,7 +272,8 @@ maximum number of lost tribes tokens, also returns `{"result": "badRegions"}`
     {"result": "badGameName"},
     {"result": "gameNameTaken"},
     {"result": "badGameDescription"},
-    {"result": "alreadyInGame"}
+    {"result": "alreadyInGame"},
+	{"result": "tooManyPlayersForMap"}
       
 #####Description:
 Creates new game.
@@ -288,6 +296,10 @@ of another game, it returns `{"result": "alreadyInGame"}`.
 
 **gameDescription** is an optional field, whoset length must be less
   than 300(`{"result": "badGameDescription"}` otherwise)
+  
+**ai** is an optional field, an integer describing AI quantity in game
+  if ai is greater then playerNum of chosen map the result will be
+  `{"result": "tooManyPlayersForMap"}`
 
 **regions** is list of region indexes for chosen map
 
@@ -539,6 +551,30 @@ User with specified sid joins the game with id = gameId
 If game status isn't 'waiting', function returns `{"result": "badGameState"}`.
 If the user with specified session id playing or waiting the begining
 of another game, it returns `{"result": "alreadyInGame"}`.
+
+If there are no free space on map for new users, it returns 
+`{"result": "tooManyPlayers"}`
+
+###aiJoin
+#####Format:
+    {
+      "action": "aiJoin",
+      "gameId": <gameId>
+    }
+#####Success:
+      {"result": "ok"}
+      
+#####Fail:
+      {"result": "badJson"},
+      {"result": "badGameId"},
+      {"result": "badGameState"},
+      {"result": "tooManyPlayers"}
+      
+#####Description:
+AI joins the game with id = gameId
+
+**gameId** must be a valid id of game, otherwise returns `{"result": "badGameId"}`
+If game status isn't 'waiting', function returns `{"result": "badGameState"}`.
 
 If there are no free space on map for new users, it returns 
 `{"result": "tooManyPlayers"}`
@@ -1203,33 +1239,31 @@ Receives the list of games.
 	**visibleTokenBadges** returns 6 visible pairs of races and specialPowers, their positions and bonus money.
     First pair cost 0 coins, second -- 1 coins etc.
 	
-###getMapState
+###getMapList
 #####Format:
 	{
-		"action": "getMapState",
-		"mapId": <mapId>
-	}
-#####Fail:
-	{
-		"result": "badMapId"
+		"action": "getMapList"
 	}
 #####Success:
 	{
 		"result": "ok",
-		"gameState": {
-			"map": {
-				"mapId": <mapId>,
-				"mapName": <mapName>,
-				"turnsNum": <turnsNum>,
-				"playersNum": <playersNum>,
-				"regions":[{
-					"constRegionState": [<constRegionParams>],
-					"adjacentRegions":[<adjacentRegion>],
-				}]
-			}
-		}
+		"maps": [{
+			"mapId": <mapId>,
+			"mapName": <mapName>,
+			"turnsNum": <turnsNum>,
+			"playersNum": <playersNum>,
+			"picture": <image>
+			"regions":[{
+				"constRegionState": [<constRegionParams>],
+				"coordinates":[[<x>,<y>]],
+				"raceCoords":[<x>,<y>],
+				"powerCoords":[<x>,<y>]
+			}]
+		}]
 	}
 #####Description:
+Receives the list of maps.
+all coordinates are number of pixels. (0, 0) - left top corner
 
 ###saveGame
 #####Format:
