@@ -841,7 +841,7 @@ This command can be only executed after following commands:
       "regions": [{"regionId": <regionId>, "tokensNum": <tokensNum>}],
       "encampments": [{"regionId": <regionId>, "encampmentsNum": <encampmentsNum>}],
       "fortified": {"regionId": <regionId>},
-      "heroes": ["regionId": <regionId>]
+      "heroes": [{"regionId": <regionId>}]
     }
 #####Success:
      {"result": "ok"}
